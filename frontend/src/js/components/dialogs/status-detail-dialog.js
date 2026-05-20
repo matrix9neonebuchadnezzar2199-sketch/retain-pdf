@@ -12,53 +12,53 @@ class StatusDetailDialog extends HTMLElement {
               <span id="status-detail-head-icon" class="status-detail-head-icon" aria-hidden="true"></span>
               <div class="status-detail-head-copy">
                 <div class="status-detail-head-top">
-                  <h2>任务详情</h2>
+                  <h2>タスク詳細</h2>
                   <p class="status-detail-job-meta">Job ID <span id="status-detail-job-id" class="status-detail-job-id mono">-</span></p>
                 </div>
-                <p id="status-detail-head-note" class="status-panel-note">查看任务概览、失败原因与事件流</p>
+                <p id="status-detail-head-note" class="status-panel-note">タスク概要・失敗原因・イベントストリームを表示</p>
               </div>
             </div>
-            <button id="status-detail-close-btn" type="submit" class="dialog-close-btn" aria-label="关闭">×</button>
+            <button id="status-detail-close-btn" type="submit" class="dialog-close-btn" aria-label="閉じる">×</button>
           </div>
           <div class="desktop-body status-detail-body">
-            <div class="detail-tabs" role="tablist" aria-label="任务详情">
-              <button id="detail-tab-overview" type="button" class="detail-tab is-active" data-tab="overview" role="tab" aria-selected="true">概览</button>
-              <button id="detail-tab-failure" type="button" class="detail-tab" data-tab="failure" role="tab" aria-selected="false">失败</button>
-              <button id="detail-tab-events" type="button" class="detail-tab" data-tab="events" role="tab" aria-selected="false">事件</button>
+            <div class="detail-tabs" role="tablist" aria-label="タスク詳細">
+              <button id="detail-tab-overview" type="button" class="detail-tab is-active" data-tab="overview" role="tab" aria-selected="true">概要</button>
+              <button id="detail-tab-failure" type="button" class="detail-tab" data-tab="failure" role="tab" aria-selected="false">失敗</button>
+              <button id="detail-tab-events" type="button" class="detail-tab" data-tab="events" role="tab" aria-selected="false">イベント</button>
             </div>
 
             <div class="detail-tab-panels">
               <section id="detail-panel-overview" class="detail-tab-panel is-active" data-panel="overview" role="tabpanel">
                 <div class="detail-download-row">
-                  <a id="markdown-bundle-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">下载 Markdown ZIP</a>
+                  <a id="markdown-bundle-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">Markdown ZIP をダウンロード</a>
                 </div>
                 <div class="detail-grid">
                   <div class="detail-item">
-                    <span class="label">当前阶段</span>
+                    <span class="label">現在の段階</span>
                     <span id="runtime-current-stage" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">当前阶段耗时</span>
+                    <span class="label">現在段階の経過時間</span>
                     <span id="runtime-stage-elapsed" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">累计耗时</span>
+                    <span class="label">累計経過時間</span>
                     <span id="runtime-total-elapsed" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">重试次数</span>
+                    <span class="label">リトライ回数</span>
                     <span id="runtime-retry-count" class="info-value">0</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">最近切换</span>
+                    <span class="label">直近の切替</span>
                     <span id="runtime-last-transition" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">终态原因</span>
+                    <span class="label">終了理由</span>
                     <span id="runtime-terminal-reason" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">输入协议</span>
+                    <span class="label">入力プロトコル</span>
                     <span id="runtime-input-protocol" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
@@ -66,15 +66,15 @@ class StatusDetailDialog extends HTMLElement {
                     <span id="runtime-stage-spec-version" class="info-value">-</span>
                   </div>
                   <div class="detail-item">
-                    <span class="label">公式模式</span>
+                    <span class="label">数式モード</span>
                     <span id="runtime-math-mode" class="info-value">-</span>
                   </div>
                 </div>
                 <div class="status-panel detail-stage-panel">
                   <div class="status-panel-head">
-                    <h3>过程时间线</h3>
+                    <h3>処理タイムライン</h3>
                   </div>
-                  <div id="overview-stage-empty" class="events-empty">暂无阶段记录</div>
+                  <div id="overview-stage-empty" class="events-empty">段階記録はありません</div>
                   <div id="overview-stage-list" class="stage-history-list hidden"></div>
                 </div>
               </section>
@@ -82,36 +82,36 @@ class StatusDetailDialog extends HTMLElement {
               <section id="detail-panel-failure" class="detail-tab-panel" data-panel="failure" role="tabpanel" hidden>
                 <div class="status-panel">
                   <div class="status-panel-head">
-                    <h3>失败诊断</h3>
-                    <span class="status-panel-note">结构化失败摘要与排查建议</span>
+                    <h3>失敗診断</h3>
+                    <span class="status-panel-note">構造化された失敗概要と調査の提案</span>
                   </div>
                   <div class="failure-hero-card">
-                    <span class="label">失败摘要</span>
+                    <span class="label">失敗概要</span>
                     <span id="failure-summary" class="info-value">-</span>
                   </div>
                   <div class="info-list detail-info-list">
                     <div class="info-row">
-                      <span class="label">分类</span>
+                      <span class="label">分類</span>
                       <span id="failure-category" class="info-value">-</span>
                     </div>
                     <div class="info-row">
-                      <span class="label">阶段</span>
+                      <span class="label">段階</span>
                       <span id="failure-stage" class="info-value">-</span>
                     </div>
                     <div class="info-row">
-                      <span class="label">根因</span>
+                      <span class="label">根本原因</span>
                       <span id="failure-root-cause" class="info-value">-</span>
                     </div>
                     <div class="info-row">
-                      <span class="label">建议</span>
+                      <span class="label">提案</span>
                       <span id="failure-suggestion" class="info-value">-</span>
                     </div>
                     <div class="info-row">
-                      <span class="label">最近日志</span>
+                      <span class="label">直近ログ</span>
                       <span id="failure-last-log-line" class="info-value">-</span>
                     </div>
                     <div class="info-row">
-                      <span class="label">可重试</span>
+                      <span class="label">リトライ可</span>
                       <span id="failure-retryable" class="info-value">-</span>
                     </div>
                   </div>
@@ -121,11 +121,11 @@ class StatusDetailDialog extends HTMLElement {
               <section id="detail-panel-events" class="detail-tab-panel" data-panel="events" role="tabpanel" hidden>
                 <div class="status-panel">
                   <div class="status-panel-head">
-                    <h3>事件流</h3>
-                    <span id="events-status" class="status-panel-note">全部事件</span>
+                    <h3>イベントストリーム</h3>
+                    <span id="events-status" class="status-panel-note">全イベント</span>
                   </div>
-                  <p class="events-lead">按时间倒序展示最近事件，适合定位任务卡在哪个阶段以及最后一次失败前发生了什么。</p>
-                  <div id="events-empty" class="events-empty">暂无事件</div>
+                  <p class="events-lead">新しい順に直近イベントを表示します。どの段階で止まったか、最後の失敗前に何が起きたかを追うのに向いています。</p>
+                  <div id="events-empty" class="events-empty">イベントはありません</div>
                   <div id="events-list" class="events-list hidden"></div>
                 </div>
               </section>
@@ -164,7 +164,7 @@ class StatusDetailDialog extends HTMLElement {
     this.dialogElement()?.close();
   }
 
-  setHeadline({ iconMarkup = "", jobId = "-", note = "查看任务概览、失败原因与事件流" } = {}) {
+  setHeadline({ iconMarkup = "", jobId = "-", note = "タスク概要・失敗原因・イベントストリームを表示" } = {}) {
     const icon = this.querySelector("#status-detail-head-icon");
     const jobIdEl = this.querySelector("#status-detail-job-id");
     const noteEl = this.querySelector("#status-detail-head-note");
@@ -179,7 +179,7 @@ class StatusDetailDialog extends HTMLElement {
     }
   }
 
-  renderStageHistory({ markup = "", emptyText = "暂无阶段记录", hasItems = false } = {}) {
+  renderStageHistory({ markup = "", emptyText = "段階記録はありません", hasItems = false } = {}) {
     const list = this.querySelector("#overview-stage-list");
     const empty = this.querySelector("#overview-stage-empty");
     if (!list || !empty) {
@@ -197,14 +197,14 @@ class StatusDetailDialog extends HTMLElement {
     list.innerHTML = markup;
   }
 
-  renderEvents({ markup = "", count = 0, emptyText = "暂无事件", hasItems = false } = {}) {
+  renderEvents({ markup = "", count = 0, emptyText = "イベントはありません", hasItems = false } = {}) {
     const list = this.querySelector("#events-list");
     const empty = this.querySelector("#events-empty");
     const status = this.querySelector("#events-status");
     if (!list || !empty || !status) {
       return;
     }
-    status.textContent = hasItems ? `最近 ${count} 条` : "暂无事件";
+    status.textContent = hasItems ? `直近 ${count} 件` : "イベントはありません";
     if (!hasItems) {
       list.innerHTML = "";
       list.classList.add("hidden");

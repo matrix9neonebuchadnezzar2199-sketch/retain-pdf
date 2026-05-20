@@ -9,18 +9,18 @@ class DeveloperAuthDialog extends HTMLElement {
         <form method="dialog" class="desktop-shell">
           <div class="desktop-head">
             <div class="credential-dialog-head">
-              <h2>开发者验证</h2>
+              <h2>開発者認証</h2>
             </div>
-            <button id="developer-auth-close-btn" type="submit" class="dialog-close-btn" aria-label="关闭">×</button>
+            <button id="developer-auth-close-btn" type="submit" class="dialog-close-btn" aria-label="閉じる">×</button>
           </div>
           <div class="desktop-body developer-auth-body">
             <label>
-              <span>开发者密码</span>
-              <input id="developer-auth-password" type="password" autocomplete="current-password" placeholder="请输入密码" />
+              <span>開発者パスワード</span>
+              <input id="developer-auth-password" type="password" autocomplete="current-password" placeholder="パスワードを入力" />
             </label>
             <div id="developer-auth-error" class="upload-status hidden"></div>
             <div class="actions credential-dialog-actions">
-              <button id="developer-auth-submit-btn" type="button">进入开发者设置</button>
+              <button id="developer-auth-submit-btn" type="button">開発者設定を開く</button>
             </div>
           </div>
         </form>

@@ -2,7 +2,7 @@ async function loadPartial(relativePath) {
   const url = new URL(relativePath, import.meta.url);
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`加载页面片段失败: ${relativePath}`);
+    throw new Error(`ページ断片の読み込みに失敗しました: ${relativePath}`);
   }
   return response.text();
 }

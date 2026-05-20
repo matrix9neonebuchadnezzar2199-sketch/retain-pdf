@@ -9,14 +9,14 @@ class AppShellHeader extends HTMLElement {
       <header class="topbar">
         <div class="brand-mark" aria-hidden="true"></div>
         <div class="hero-actions">
-          <button id="developer-btn" type="button" class="secondary">开发者</button>
-          <button id="open-output-btn" type="button" class="secondary hidden">打开输出目录</button>
+          <button id="developer-btn" type="button" class="secondary">開発者</button>
+          <button id="open-output-btn" type="button" class="secondary hidden">出力フォルダを開く</button>
         </div>
       </header>
 
       <section class="hero hero-single">
         <div class="hero-copy">
-          <a class="hero-repo-link" href="https://github.com/wxyhgk/retain-pdf" target="_blank" rel="noopener noreferrer">
+          <a class="hero-repo-link" href="https://github.com/matrix9neonebuchadnezzar2199-sketch/retain-pdf" target="_blank" rel="noopener noreferrer">
             <img class="hero-repo-logo" src="src/assets/RetainPDF-logo.svg" alt="RetainPDF logo" />
             <span>RetainPDF</span>
           </a>

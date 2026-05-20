@@ -119,7 +119,7 @@ export function mountAppShellFeature({
       setText("error-box", "-");
     }
     setText("failure-retryable", "-");
-    setText("events-status", "全部事件");
+    setText("events-status", "全イベント");
     $("events-empty")?.classList.remove("hidden");
     $("events-list")?.classList.add("hidden");
     if ($("events-list")) {

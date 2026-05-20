@@ -67,7 +67,7 @@ export function mountDeveloperFeature({
     const password = passwordInput?.value || "";
     if (password !== developerPassword) {
       if (errorBox) {
-        errorBox.textContent = "开发者密码错误。";
+        errorBox.textContent = "開発者パスワードが正しくありません。";
         errorBox.classList.remove("hidden");
       }
       passwordInput?.focus();

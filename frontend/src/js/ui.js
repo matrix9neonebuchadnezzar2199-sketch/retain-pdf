@@ -26,10 +26,10 @@ function stageIconMarkup(status, stageText) {
   if (status === "failed") {
     return '<svg viewBox="0 0 24 24" fill="none"><path d="M15 9l-6 6M9 9l6 6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
-  if (text.includes("排队")) {
+  if (text.includes("待機") || text.includes("排队")) {
     return '<svg viewBox="0 0 24 24" fill="none"><path d="M8 7h8M8 12h8M8 17h5M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
   }
-  if (text.includes("翻译")) {
+  if (text.includes("翻訳") || text.includes("翻译")) {
     return '<svg viewBox="0 0 24 24" fill="none"><path d="M4 6h8M8 6c0 6-2 10-5 12M8 6c1 3 3.5 6.5 7 9M14 6h6M17 6v12M14 18h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
   if (text.includes("解析") || text.includes("ocr")) {
@@ -44,7 +44,7 @@ function formatElapsedMs(ms) {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
   if (hours > 0) {
-    return `${hours}小时 ${minutes}分 ${seconds}秒`;
+    return `${hours}時間 ${minutes}分 ${seconds}秒`;
   }
   if (minutes > 0) {
     return `${minutes}分 ${seconds}秒`;
@@ -211,13 +211,13 @@ function updateRing(job) {
   }
   const stageText = summarizeStageDetail(job);
   const ringLabelText = job.status === "succeeded"
-    ? "处理完成"
+    ? "処理完了"
     : job.status === "failed"
-      ? "处理失败"
+      ? "処理失敗"
       : job.status === "queued"
-      ? "排队中"
-        : "处理中";
-  const ringValueText = stageText || "准备中";
+      ? "待機中"
+        : "処理中";
+  const ringValueText = stageText || "準備中";
   const iconMarkup = stageIconMarkup(job.status, stageText);
   const statusCard = document.querySelector("job-status-card");
   if (statusCard?.setStagePresentation && !statusCard?.renderSnapshot) {
@@ -245,10 +245,10 @@ function updateRing(job) {
 function updateDetailDialog(job) {
   const stageText = summarizeStageDetail(job);
   const note = job.status === "failed"
-    ? "查看失败原因、建议与事件流"
+    ? "失敗原因・提案・イベントストリームを表示"
     : job.status === "succeeded"
-      ? "任务已完成，可查看概览与事件流"
-      : "查看任务概览、失败原因与事件流";
+      ? "タスク完了。概要とイベントストリームを確認できます"
+      : "タスク概要・失敗原因・イベントストリームを表示";
   const component = document.querySelector("status-detail-dialog");
   if (component?.setHeadline) {
     component.setHeadline({
@@ -266,10 +266,10 @@ function updateDetailDialog(job) {
 function summarizeMathMode(job) {
   const mathMode = `${job?.request_payload_math_mode || ""}`.trim();
   if (mathMode === "placeholder") {
-    return "placeholder - 公式占位保护";
+    return "placeholder - 数式プレースホルダ保護";
   }
   if (mathMode === "direct_typst") {
-    return "direct_typst - 模型直出公式";
+    return "direct_typst - モデル直出し数式";
   }
   return mathMode || "-";
 }
@@ -327,7 +327,7 @@ function renderFailureDetails(job) {
     ),
   };
   const retryable = failure.retryable ?? failureDiagnostic.retryable;
-  details.retryable = typeof retryable === "boolean" ? (retryable ? "是" : "否") : "-";
+  details.retryable = typeof retryable === "boolean" ? (retryable ? "はい" : "いいえ") : "-";
   const component = document.querySelector("status-detail-dialog");
   if (component?.setFailureDetails && !component?.renderSnapshot) {
     component.setFailureDetails(details);
@@ -359,20 +359,20 @@ function summarizeStageName(stage, detail) {
   }
   switch (`${stage || ""}`.trim()) {
     case "queued":
-      return "排队中";
+      return "待機中";
     case "running":
-      return "处理中";
+      return "処理中";
     case "translating":
-      return "翻译";
+      return "翻訳";
     case "parsing":
     case "ocr":
       return "解析 / OCR";
     case "rendering":
-      return "渲染";
+      return "レンダリング";
     case "succeeded":
-      return "已完成";
+      return "完了";
     case "failed":
-      return "失败";
+      return "失敗";
     default:
       return `${stage || "-"}`.trim() || "-";
   }
@@ -428,7 +428,7 @@ function renderStageHistory(job) {
     if (component?.renderStageHistory) {
       component.renderStageHistory({
         markup: "",
-        emptyText: "后端未返回 runtime.stage_history",
+        emptyText: "バックエンドが runtime.stage_history を返しませんでした",
         hasItems: false,
       });
       return;
@@ -440,14 +440,14 @@ function renderStageHistory(job) {
     }
     list.innerHTML = "";
     list.classList.add("hidden");
-    empty.textContent = "后端未返回 runtime.stage_history";
+    empty.textContent = "バックエンドが runtime.stage_history を返しませんでした";
     empty.classList.remove("hidden");
     return;
   }
   const markup = history.map((entry, index) => {
     const duration = resolveStageHistoryDuration(entry, job);
     const enterAt = entry?.enter_at ? formatEventTimestamp(entry.enter_at) : "-";
-    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "进行中");
+    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "進行中");
     const stageName = summarizeStageName(entry?.stage, entry?.detail);
     const terminalText = entry?.terminal_status ? ` · ${entry.terminal_status}` : "";
     return `
@@ -467,7 +467,7 @@ function renderStageHistory(job) {
   if (component?.renderStageHistory) {
     component.renderStageHistory({
       markup,
-      emptyText: "后端未返回 runtime.stage_history",
+      emptyText: "バックエンドが runtime.stage_history を返しませんでした",
       hasItems: true,
     });
     return;
@@ -501,7 +501,7 @@ function renderEvents(eventsPayload) {
       component.renderEvents({
         markup: "",
         count: 0,
-        emptyText: "暂无事件",
+        emptyText: "イベントはありません",
         hasItems: false,
       });
       return;
@@ -512,7 +512,7 @@ function renderEvents(eventsPayload) {
     if (!list || !empty || !status) {
       return;
     }
-    status.textContent = "暂无事件";
+    status.textContent = "イベントはありません";
     list.innerHTML = "";
     list.classList.add("hidden");
     empty.classList.remove("hidden");
@@ -532,7 +532,7 @@ function renderEvents(eventsPayload) {
         <div class="event-title">${escapeHtml(item.message || "-")}</div>
         ${payloadText ? `
           <details class="event-payload-wrap">
-            <summary class="event-payload-toggle">查看 payload</summary>
+            <summary class="event-payload-toggle">payload を表示</summary>
             <pre class="event-payload">${escapeHtml(payloadText)}</pre>
           </details>
         ` : ""}
@@ -544,7 +544,7 @@ function renderEvents(eventsPayload) {
     component.renderEvents({
       markup,
       count: items.length,
-      emptyText: "暂无事件",
+      emptyText: "イベントはありません",
       hasItems: true,
     });
     return;
@@ -555,7 +555,7 @@ function renderEvents(eventsPayload) {
   if (!list || !empty || !status) {
     return;
   }
-  status.textContent = `最近 ${items.length} 条`;
+  status.textContent = `直近 ${items.length} 件`;
   empty.classList.add("hidden");
   list.classList.remove("hidden");
   list.innerHTML = markup;
@@ -564,10 +564,10 @@ function renderEvents(eventsPayload) {
 function buildStatusDetailSnapshot(job, eventsPayload) {
   const stageText = summarizeStageDetail(job);
   const note = job.status === "failed"
-    ? "查看失败原因、建议与事件流"
+    ? "失敗原因・提案・イベントストリームを表示"
     : job.status === "succeeded"
-      ? "任务已完成，可查看概览与事件流"
-      : "查看任务概览、失败原因与事件流";
+      ? "タスク完了。概要とイベントストリームを確認できます"
+      : "タスク概要・失敗原因・イベントストリームを表示";
   const runtimeDurations = resolveLiveDurations(job);
   const failure = job.failure || {};
   const failureDiagnostic = job.failure_diagnostic || {};
@@ -576,7 +576,7 @@ function buildStatusDetailSnapshot(job, eventsPayload) {
   const stageHistoryMarkup = history.map((entry, index) => {
     const duration = resolveStageHistoryDuration(entry, job);
     const enterAt = entry?.enter_at ? formatEventTimestamp(entry.enter_at) : "-";
-    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "进行中");
+    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "進行中");
     const stageName = summarizeStageName(entry?.stage, entry?.detail);
     const terminalText = entry?.terminal_status ? ` · ${entry.terminal_status}` : "";
     return `
@@ -607,7 +607,7 @@ function buildStatusDetailSnapshot(job, eventsPayload) {
         <div class="event-title">${escapeHtml(item.message || "-")}</div>
         ${payloadText ? `
           <details class="event-payload-wrap">
-            <summary class="event-payload-toggle">查看 payload</summary>
+            <summary class="event-payload-toggle">payload を表示</summary>
             <pre class="event-payload">${escapeHtml(payloadText)}</pre>
           </details>
         ` : ""}
@@ -651,17 +651,17 @@ function buildStatusDetailSnapshot(job, eventsPayload) {
       lastLogLine: summarizeRuntimeField(
         failure.last_log_line || failureDiagnostic.last_log_line,
       ),
-      retryable: typeof retryable === "boolean" ? (retryable ? "是" : "否") : "-",
+      retryable: typeof retryable === "boolean" ? (retryable ? "はい" : "いいえ") : "-",
     },
     stageHistory: {
       markup: stageHistoryMarkup,
-      emptyText: "后端未返回 runtime.stage_history",
+      emptyText: "バックエンドが runtime.stage_history を返しませんでした",
       hasItems: history.length > 0,
     },
     events: {
       markup: eventsMarkup,
       count: events.length,
-      emptyText: "暂无事件",
+      emptyText: "イベントはありません",
       hasItems: events.length > 0,
     },
   };
@@ -811,13 +811,13 @@ export function setUploadProgress(loaded, total) {
     if (fill) {
       fill.style.width = `${percent}%`;
     }
-    $("upload-progress-text").textContent = `上传中 ${percent.toFixed(0)}%`;
+    $("upload-progress-text").textContent = `アップロード中 ${percent.toFixed(0)}%`;
     return;
   }
   if (fill) {
     fill.style.width = "18%";
   }
-  $("upload-progress-text").textContent = "上传中";
+  $("upload-progress-text").textContent = "アップロード中";
 }
 
 export function resetUploadProgress() {
@@ -828,7 +828,7 @@ export function resetUploadProgress() {
   if (fill) {
     fill.style.width = "0%";
   }
-  $("upload-progress-text").textContent = "上传中";
+  $("upload-progress-text").textContent = "アップロード中";
 }
 
 export function clearFileInputValue() {
@@ -850,7 +850,7 @@ export function resetUploadedFile() {
   $("submit-btn").disabled = true;
   $("upload-action-slot")?.classList.add("hidden");
   $("file")?.closest(".upload-tile")?.classList.remove("is-ready");
-  $("upload-status").textContent = "未上传文件";
+  $("upload-status").textContent = "ファイル未アップロード";
   $("upload-status")?.classList.add("hidden");
   $("file-label").textContent = DEFAULT_FILE_LABEL;
   $("file-label").title = "";
@@ -899,13 +899,13 @@ export function renderJob(payload, eventsPayload = null, manifestPayload = null)
   if (statusCard?.renderSnapshot) {
     statusCard.renderSnapshot({
       label: job.status === "succeeded"
-        ? "处理完成"
+        ? "処理完了"
         : job.status === "failed"
-          ? "处理失败"
+          ? "処理失敗"
           : job.status === "queued"
-            ? "排队中"
-            : "处理中",
-      value: stageText || "准备中",
+            ? "待機中"
+            : "処理中",
+      value: stageText || "準備中",
       iconMarkup: stageIconMarkup(job.status, stageText),
       elapsed: resolveLiveDurations(job).totalElapsedText,
       progressCurrent: job.progress_current,

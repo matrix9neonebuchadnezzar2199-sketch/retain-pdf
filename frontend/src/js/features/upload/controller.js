@@ -48,17 +48,17 @@ export function mountUploadFeature({
     }
     if (!workflowNeedsUpload()) {
       summary.classList.add("hidden");
-      summary.textContent = "已选择页码：-";
+      summary.textContent = "選択ページ：-";
       return;
     }
     const value = currentPageRanges();
     if (!value) {
       summary.classList.add("hidden");
-      summary.textContent = "已选择页码：-";
+      summary.textContent = "選択ページ：-";
       return;
     }
     summary.classList.remove("hidden");
-    summary.textContent = `已选择页码：${value}`;
+    summary.textContent = `選択ページ：${value}`;
   }
 
   function openPageRangeDialog() {
@@ -69,17 +69,17 @@ export function mountUploadFeature({
     const titleEl = $("page-range-title");
     if (maxPage > 0) {
       if (limitText) {
-        limitText.textContent = `按页码范围限制本次翻译（最多 ${maxPage} 页，页码从 1 开始）。`;
+        limitText.textContent = `ページ範囲で今回の翻訳を制限します（最大 ${maxPage} ページ、ページ番号は 1 から）。`;
       }
       if (titleEl) {
-        titleEl.textContent = `分页翻译（最多 ${maxPage} 页）`;
+        titleEl.textContent = `ページ指定翻訳（最大 ${maxPage} ページ）`;
       }
     } else {
       if (limitText) {
-        limitText.textContent = "按页码范围限制本次翻译，页码从 1 开始。";
+        limitText.textContent = "ページ範囲で今回の翻訳を制限します。ページ番号は 1 からです。";
       }
       if (titleEl) {
-        titleEl.textContent = "分页翻译";
+        titleEl.textContent = "ページ指定翻訳";
       }
     }
     if (maxPage > 0) {
@@ -105,19 +105,19 @@ export function mountUploadFeature({
     const start = startInput?.value?.trim() || "";
     const end = endInput?.value?.trim() || "";
     if ((start && Number(start) < 1) || (end && Number(end) < 1)) {
-      setText("error-box", "页码必须从 1 开始");
+      setText("error-box", "ページ番号は 1 から始めてください");
       return;
     }
     if ((start && frontMaxPageCount && Number(start) > frontMaxPageCount) || (end && frontMaxPageCount && Number(end) > frontMaxPageCount)) {
-      setText("error-box", `页码不能超过 ${frontMaxPageCount}`);
+      setText("error-box", `ページ番号は ${frontMaxPageCount} を超えられません`);
       return;
     }
     if (start && end && Number(start) > Number(end)) {
-      setText("error-box", "起始页不能大于结束页");
+      setText("error-box", "開始ページは終了ページより大きくできません");
       return;
     }
     if (frontMaxPageCount && start && end && Number(end) - Number(start) + 1 > frontMaxPageCount) {
-      setText("error-box", `页码区间不能超过 ${frontMaxPageCount} 页`);
+      setText("error-box", `ページ範囲は ${frontMaxPageCount} ページを超えられません`);
       return;
     }
     if (startInput) {
@@ -160,37 +160,37 @@ export function mountUploadFeature({
       return;
     }
     if (file.size > frontMaxBytes) {
-      setText("error-box", "当前前端限制为 100MB 以内 PDF");
-      setText("upload-status", "文件超出大小限制");
+      setText("error-box", "フロントエンドの上限は 100MB 以内の PDF です");
+      setText("upload-status", "ファイルがサイズ上限を超えています");
       $("upload-status")?.classList.remove("hidden");
       return;
     }
     if (frontMaxPageCount && countPdfPages) {
-      setText("upload-status", "正在校验页数…");
+      setText("upload-status", "ページ数を検証しています…");
       $("upload-status")?.classList.remove("hidden");
       try {
         const localPageCount = await countPdfPages(file);
         if (!Number.isFinite(localPageCount) || localPageCount <= 0) {
-          setText("error-box", "PDF 解析失败，请检查文件是否损坏或可访问性异常。");
-          setText("upload-status", "文件校验失败");
+          setText("error-box", "PDF の解析に失敗しました。ファイルの破損やアクセス権限を確認してください。");
+          setText("upload-status", "ファイル検証に失敗しました");
           clearFileInputValue();
           return;
         }
         if (localPageCount > frontMaxPageCount) {
-          setText("error-box", `PDF 页数超过限制：最多 ${frontMaxPageCount} 页`);
-          setText("upload-status", "文件超出页数限制");
+          setText("error-box", `PDF のページ数が上限を超えています：最大 ${frontMaxPageCount} ページ`);
+          setText("upload-status", "ページ数が上限を超えています");
           clearFileInputValue();
           return;
         }
       } catch (err) {
-        setText("error-box", err?.message || "PDF 解析失败，请稍后重试。");
-        setText("upload-status", "文件校验失败");
+        setText("error-box", err?.message || "PDF の解析に失敗しました。しばらくしてから再試行してください。");
+        setText("upload-status", "ファイル検証に失敗しました");
         clearFileInputValue();
         return;
       }
     }
     setText("error-box", "-");
-    setText("upload-status", "正在上传…");
+    setText("upload-status", "アップロード中…");
     $("upload-status")?.classList.remove("hidden");
 
     try {
@@ -201,8 +201,8 @@ export function mountUploadFeature({
       );
       const uploadedPageCount = Number(payload.page_count || 0);
       if (frontMaxPageCount > 0 && uploadedPageCount > frontMaxPageCount) {
-        setText("error-box", `PDF 页数超过限制：最多 ${frontMaxPageCount} 页`);
-        setText("upload-status", "文件超出页数限制");
+        setText("error-box", `PDF のページ数が上限を超えています：最大 ${frontMaxPageCount} ページ`);
+        setText("upload-status", "ページ数が上限を超えています");
         clearFileInputValue();
         resetUploadedFile();
         return;
@@ -213,7 +213,7 @@ export function mountUploadFeature({
       state.uploadedBytes = Number(payload.bytes || file.size || 0);
       $("file")?.closest(".upload-tile")?.classList.toggle("is-ready", !!state.uploadId);
       $("file")?.closest(".upload-tile")?.classList.remove("is-uploading");
-      setText("upload-status", `上传完成: ${state.uploadedFileName} | ${state.uploadedPageCount} 页 | ${(state.uploadedBytes / 1024 / 1024).toFixed(2)} MB`);
+      setText("upload-status", `アップロード完了: ${state.uploadedFileName} | ${state.uploadedPageCount} ページ | ${(state.uploadedBytes / 1024 / 1024).toFixed(2)} MB`);
       $("upload-status")?.classList.remove("hidden");
       clearFileInputValue();
       refreshSubmitControls();
@@ -221,7 +221,7 @@ export function mountUploadFeature({
       resetUploadedFile();
       clearFileInputValue();
       setText("error-box", err.message);
-      setText("upload-status", "上传失败");
+      setText("upload-status", "アップロード失敗");
       $("upload-status")?.classList.remove("hidden");
       applyWorkflowMode();
     }

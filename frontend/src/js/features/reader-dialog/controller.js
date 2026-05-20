@@ -189,7 +189,7 @@ async function downloadProtectedResource(fetchProtected, url, fallbackName, pref
   const resp = await fetchProtected(url);
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`下载失败: ${resp.status} ${text || "unknown error"}`);
+    throw new Error(`ダウンロードに失敗しました: ${resp.status} ${text || "unknown error"}`);
   }
   const blob = await resp.blob();
   const disposition = resp.headers.get("content-disposition") || "";
@@ -201,7 +201,7 @@ async function fetchProtectedBytes(fetchProtected, url, label) {
   const resp = await fetchProtected(url);
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`读取${label}失败: ${resp.status} ${text || "unknown error"}`);
+    throw new Error(`${label}の読み込みに失敗しました: ${resp.status} ${text || "unknown error"}`);
   }
   return resp.arrayBuffer();
 }
@@ -315,7 +315,7 @@ export function mountReaderDialogFeature({
     $("reader-dialog-loading")?.classList.toggle("hidden", !loading);
   }
 
-  function setLoadingProgress(percent = 0, text = "正在准备对照阅读…") {
+  function setLoadingProgress(percent = 0, text = "対照閲覧を準備しています…") {
     const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
     const textEl = $("reader-dialog-loading-text");
     const barEl = $("reader-dialog-loading-bar");
@@ -386,8 +386,8 @@ export function mountReaderDialogFeature({
     button.innerHTML = "<span>生成中…</span>";
     try {
       const [sourceBytes, translatedBytes] = await Promise.all([
-        fetchProtectedBytes(fetchProtected, sourcePdf, "原始 PDF"),
-        fetchProtectedBytes(fetchProtected, translatedPdf, "译文 PDF"),
+        fetchProtectedBytes(fetchProtected, sourcePdf, "元の PDF"),
+        fetchProtectedBytes(fetchProtected, translatedPdf, "訳文 PDF"),
       ]);
       const mergedBytes = await buildMergedComparePdf(sourceBytes, translatedBytes);
       downloadBlob(new Blob([mergedBytes], { type: "application/pdf" }), `${state.currentJobId || "result"}-compare.pdf`);
@@ -444,7 +444,7 @@ export function mountReaderDialogFeature({
     const frame = $("reader-dialog-frame");
     if (frame) {
       setLoading(true);
-      setLoadingProgress(8, "正在准备对照阅读…");
+      setLoadingProgress(8, "対照閲覧を準備しています…");
       const component = readerDialogComponent();
       if (component?.setFrameSource) {
         component.setFrameSource(url);
@@ -469,7 +469,7 @@ export function mountReaderDialogFeature({
       $("reader-dialog")?.close();
     }
     setLoading(false);
-    setLoadingProgress(0, "正在准备对照阅读…");
+    setLoadingProgress(0, "対照閲覧を準備しています…");
     setToolbarButtonState("reader-source-download-btn", false);
     setToolbarButtonState("reader-translated-download-btn", false);
     setToolbarButtonState("reader-merged-download-btn", false);

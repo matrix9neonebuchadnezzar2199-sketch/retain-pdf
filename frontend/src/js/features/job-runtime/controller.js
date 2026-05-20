@@ -128,7 +128,7 @@ export function mountJobRuntimeFeature({
     setText("failure-suggestion", "-");
     setText("failure-last-log-line", "-");
     setText("failure-retryable", "-");
-    setText("events-status", "全部事件");
+    setText("events-status", "全イベント");
     $("events-empty")?.classList.remove("hidden");
     $("events-list")?.classList.add("hidden");
     if ($("events-list")) {
@@ -141,7 +141,7 @@ export function mountJobRuntimeFeature({
   async function cancelCurrentJob() {
     const jobId = state.currentJobId;
     if (!jobId) {
-      setText("error-box", "当前没有可取消的任务");
+      setText("error-box", "キャンセル可能なタスクがありません");
       return;
     }
     $("cancel-btn").disabled = true;

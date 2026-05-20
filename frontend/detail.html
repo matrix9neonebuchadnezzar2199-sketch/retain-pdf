@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>任务详情</title>
+    <title>タスク詳細</title>
     <link rel="icon" type="image/svg+xml" href="./src/assets/RetainPDF-logo.svg" />
     <link rel="shortcut icon" href="./src/assets/RetainPDF-logo.svg" />
     <link rel="stylesheet" href="./styles.css" />
@@ -16,73 +16,73 @@
       <section class="detail-hero">
         <div class="detail-hero-top">
           <div>
-            <h1>任务详情</h1>
-            <p id="detail-head-note">通过 `detail.html?job_id=...` 可直接分享当前任务详情。</p>
+            <h1>タスク詳細</h1>
+            <p id="detail-head-note">`detail.html?job_id=...` で現在のタスク詳細を共有できます。</p>
           </div>
           <div class="detail-actions">
-            <a id="detail-reader-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">对照阅读</a>
-            <a id="detail-pdf-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">下载 PDF</a>
+            <a id="detail-reader-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">対照閲覧</a>
+            <a id="detail-pdf-btn" class="button-link secondary disabled" href="#" target="_blank" rel="noopener noreferrer">PDF をダウンロード</a>
           </div>
         </div>
         <div class="detail-meta-list">
           <div class="detail-meta-row"><span class="label">Job ID</span><span id="detail-job-id" class="value mono">-</span></div>
-          <div class="detail-meta-row"><span class="label">状态摘要</span><span id="detail-status-summary" class="value">-</span></div>
-          <div class="detail-meta-row"><span class="label">当前阶段</span><span id="detail-stage-detail" class="value">-</span></div>
-          <div class="detail-meta-row"><span class="label">完成时间</span><span id="detail-finished-at" class="value">-</span></div>
+          <div class="detail-meta-row"><span class="label">ステータス概要</span><span id="detail-status-summary" class="value">-</span></div>
+          <div class="detail-meta-row"><span class="label">現在の段階</span><span id="detail-stage-detail" class="value">-</span></div>
+          <div class="detail-meta-row"><span class="label">完了時刻</span><span id="detail-finished-at" class="value">-</span></div>
         </div>
       </section>
 
       <section class="detail-grid">
         <article class="detail-card">
-          <h2>运行信息</h2>
+          <h2>実行情報</h2>
           <div class="detail-meta-list">
-            <div class="detail-meta-row"><span class="label">当前阶段</span><span id="detail-runtime-current-stage" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">当前阶段耗时</span><span id="detail-runtime-stage-elapsed" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">累计耗时</span><span id="detail-runtime-total-elapsed" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">重试次数</span><span id="detail-runtime-retry-count" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">最近切换</span><span id="detail-runtime-last-transition" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">终态原因</span><span id="detail-runtime-terminal-reason" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">输入协议</span><span id="detail-runtime-input-protocol" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">現在の段階</span><span id="detail-runtime-current-stage" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">現在段階の経過時間</span><span id="detail-runtime-stage-elapsed" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">累計経過時間</span><span id="detail-runtime-total-elapsed" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">リトライ回数</span><span id="detail-runtime-retry-count" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">直近の切替</span><span id="detail-runtime-last-transition" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">終了理由</span><span id="detail-runtime-terminal-reason" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">入力プロトコル</span><span id="detail-runtime-input-protocol" class="value">-</span></div>
             <div class="detail-meta-row"><span class="label">Stage Schema</span><span id="detail-runtime-stage-spec-version" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">公式模式</span><span id="detail-runtime-math-mode" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">数式モード</span><span id="detail-runtime-math-mode" class="value">-</span></div>
           </div>
         </article>
 
         <article class="detail-card">
-          <h2>失败诊断</h2>
+          <h2>失敗診断</h2>
           <div class="detail-meta-list">
-            <div class="detail-meta-row"><span class="label">摘要</span><span id="detail-failure-summary" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">分类</span><span id="detail-failure-category" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">阶段</span><span id="detail-failure-stage" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">根因</span><span id="detail-failure-root-cause" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">建议</span><span id="detail-failure-suggestion" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">最近日志</span><span id="detail-failure-last-log-line" class="value">-</span></div>
-            <div class="detail-meta-row"><span class="label">可重试</span><span id="detail-failure-retryable" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">概要</span><span id="detail-failure-summary" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">分類</span><span id="detail-failure-category" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">段階</span><span id="detail-failure-stage" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">根本原因</span><span id="detail-failure-root-cause" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">提案</span><span id="detail-failure-suggestion" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">直近ログ</span><span id="detail-failure-last-log-line" class="value">-</span></div>
+            <div class="detail-meta-row"><span class="label">リトライ可</span><span id="detail-failure-retryable" class="value">-</span></div>
           </div>
         </article>
 
         <article class="detail-card">
-          <h2>提示 / 错误</h2>
+          <h2>メッセージ / エラー</h2>
           <pre id="detail-error-box" class="detail-log">-</pre>
         </article>
 
         <article class="detail-card">
           <div class="detail-modal-trigger">
             <div class="detail-trigger-head">
-              <h2>阶段时间线</h2>
-              <button id="detail-open-stage-history-btn" type="button" class="detail-trigger-btn">查看</button>
+              <h2>段階タイムライン</h2>
+              <button id="detail-open-stage-history-btn" type="button" class="detail-trigger-btn">表示</button>
             </div>
-            <p class="detail-trigger-copy">默认收起，不再把整页拉长。需要时再打开查看完整阶段切换记录。</p>
+            <p class="detail-trigger-copy">既定では折りたたまれます。必要なときだけ開いて段階切替の記録を確認できます。</p>
           </div>
         </article>
 
         <article class="detail-card">
           <div class="detail-modal-trigger">
             <div class="detail-trigger-head">
-              <h2>事件流</h2>
-              <button id="detail-open-events-btn" type="button" class="detail-trigger-btn">按需加载</button>
+              <h2>イベントストリーム</h2>
+              <button id="detail-open-events-btn" type="button" class="detail-trigger-btn">必要時に読込</button>
             </div>
-            <p class="detail-trigger-copy">默认不请求事件流。只有点击查看时才加载，避免分享页初次打开就消耗过多流量。</p>
+            <p class="detail-trigger-copy">既定ではイベントストリームを要求しません。表示をクリックしたときだけ読み込み、共有ページの初回トラフィックを抑えます。</p>
           </div>
         </article>
       </section>
@@ -92,13 +92,13 @@
       <div class="detail-modal-panel" role="dialog" aria-modal="true" aria-labelledby="detail-stage-history-modal-title">
         <div class="detail-modal-head">
           <div>
-            <h2 id="detail-stage-history-modal-title" class="detail-modal-title">阶段时间线</h2>
-            <p class="detail-modal-subtitle">按阶段展示进入、退出与耗时。</p>
+            <h2 id="detail-stage-history-modal-title" class="detail-modal-title">段階タイムライン</h2>
+            <p class="detail-modal-subtitle">段階ごとの開始・終了と所要時間を表示します。</p>
           </div>
-          <button id="detail-close-stage-history-btn" type="button" class="detail-modal-close" aria-label="关闭">×</button>
+          <button id="detail-close-stage-history-btn" type="button" class="detail-modal-close" aria-label="閉じる">×</button>
         </div>
         <div class="detail-modal-body">
-          <div id="detail-stage-history-empty" class="detail-empty">暂无阶段记录</div>
+          <div id="detail-stage-history-empty" class="detail-empty">段階記録はありません</div>
           <div id="detail-stage-history-list" class="detail-list hidden"></div>
         </div>
       </div>
@@ -108,14 +108,14 @@
       <div class="detail-modal-panel" role="dialog" aria-modal="true" aria-labelledby="detail-events-modal-title">
         <div class="detail-modal-head">
           <div>
-            <h2 id="detail-events-modal-title" class="detail-modal-title">事件流</h2>
-            <p class="detail-modal-subtitle">只有打开时才会请求完整事件流，首次加载后会在当前页面缓存。</p>
+            <h2 id="detail-events-modal-title" class="detail-modal-title">イベントストリーム</h2>
+            <p class="detail-modal-subtitle">開いたときだけ完全なイベントストリームを要求します。初回読込後はこのページにキャッシュされます。</p>
           </div>
-          <button id="detail-close-events-btn" type="button" class="detail-modal-close" aria-label="关闭">×</button>
+          <button id="detail-close-events-btn" type="button" class="detail-modal-close" aria-label="閉じる">×</button>
         </div>
         <div class="detail-modal-body">
-          <div id="detail-events-status" class="detail-modal-status">尚未加载</div>
-          <div id="detail-events-empty" class="detail-empty">暂无事件</div>
+          <div id="detail-events-status" class="detail-modal-status">未読込</div>
+          <div id="detail-events-empty" class="detail-empty">イベントはありません</div>
           <div id="detail-events-list" class="detail-list hidden"></div>
         </div>
       </div>

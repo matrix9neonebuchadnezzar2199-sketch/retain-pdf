@@ -45,7 +45,7 @@ export function mountBrowserCredentialsFeature({
       return;
     }
     const content = `${message || ""}`.trim();
-    el.textContent = content || "保存前会自动检测 MinerU Token。";
+    el.textContent = content || "保存前に MinerU Token を自動検証します。";
     el.classList.toggle("hidden", !content);
     el.classList.toggle("is-valid", tone === "valid");
     el.classList.toggle("is-error", tone === "error");
@@ -57,7 +57,7 @@ export function mountBrowserCredentialsFeature({
       return;
     }
     const content = `${message || ""}`.trim();
-    el.textContent = content || "可检测 DeepSeek 接口是否连通。";
+    el.textContent = content || "DeepSeek API の接続を検証できます。";
     el.classList.toggle("hidden", !content);
     el.classList.toggle("is-valid", tone === "valid");
     el.classList.toggle("is-error", tone === "error");
@@ -73,12 +73,12 @@ export function mountBrowserCredentialsFeature({
     if (!mineruToken) {
       resetMineruValidationCache();
       if (showResult) {
-        setMineruValidationMessage("请先填写 MinerU Token。", "error");
+        setMineruValidationMessage("先に MinerU Token を入力してください。", "error");
       }
       return { ok: false, status: "unauthorized" };
     }
     if (showResult) {
-      setMineruValidationMessage("正在检测 MinerU Token…");
+      setMineruValidationMessage("MinerU Token を検証しています…");
     }
     try {
       const result = await validateMineruToken(API_PREFIX, {
@@ -90,19 +90,19 @@ export function mountBrowserCredentialsFeature({
       state.mineruValidationStatus = result.status || "";
       if (showResult) {
         const hint = result.operator_hint ? ` ${result.operator_hint}` : "";
-        const message = result.summary || `MinerU Token 检测结果：${result.status || "unknown"}`;
+        const message = result.summary || `MinerU Token 検証結果：${result.status || "unknown"}`;
         setMineruValidationMessage(`${message}${hint}`.trim(), result.ok ? "valid" : "error");
       }
       return result;
     } catch (_err) {
       resetMineruValidationCache();
       if (showResult) {
-        setMineruValidationMessage("MinerU Token 检测失败，请稍后重试。", "error");
+        setMineruValidationMessage("MinerU Token の検証に失敗しました。しばらくしてから再試行してください。", "error");
       }
       return {
         ok: false,
         status: "network_error",
-        summary: "MinerU Token 检测失败，请稍后重试。",
+        summary: "MinerU Token の検証に失敗しました。しばらくしてから再試行してください。",
       };
     }
   }
@@ -111,12 +111,12 @@ export function mountBrowserCredentialsFeature({
     const modelApiKey = `${apiKey || ""}`.trim();
     if (!modelApiKey) {
       if (showResult) {
-        setDeepSeekValidationMessage("请先填写 DeepSeek Key。", "error");
+        setDeepSeekValidationMessage("先に DeepSeek Key を入力してください。", "error");
       }
       return { ok: false, status: 0 };
     }
     if (showResult) {
-      setDeepSeekValidationMessage("正在检测 DeepSeek 接口…");
+      setDeepSeekValidationMessage("DeepSeek API を検証しています…");
     }
     const baseUrl = defaultModelBaseUrl().replace(/\/$/, "");
     try {
@@ -127,20 +127,20 @@ export function mountBrowserCredentialsFeature({
       });
       if (resp.ok) {
         if (showResult) {
-          setDeepSeekValidationMessage("DeepSeek 接口连接成功。", "valid");
+          setDeepSeekValidationMessage("DeepSeek API に接続できました。", "valid");
         }
         return { ok: true, status: resp.status };
       }
       const summary = resp.status === 401
-        ? "DeepSeek Key 无效或已过期。"
-        : `DeepSeek 接口返回 ${resp.status}。`;
+        ? "DeepSeek Key が無効か期限切れです。"
+        : `DeepSeek API が ${resp.status} を返しました。`;
       if (showResult) {
         setDeepSeekValidationMessage(summary, "error");
       }
       return { ok: false, status: resp.status, summary };
     } catch (_err) {
       if (showResult) {
-        setDeepSeekValidationMessage("DeepSeek 接口检测失败，请检查网络或浏览器跨域限制。", "error");
+        setDeepSeekValidationMessage("DeepSeek API の検証に失敗しました。ネットワークまたはブラウザの CORS 制限を確認してください。", "error");
       }
       return { ok: false, status: 0 };
     }
@@ -240,7 +240,7 @@ export function mountBrowserCredentialsFeature({
     const token = ($("mineru_token").value || defaultMineruToken()).trim();
     if (!token) {
       onMissingToken?.();
-      setMineruValidationMessage("请先填写 MinerU Token。", "error");
+      setMineruValidationMessage("先に MinerU Token を入力してください。", "error");
       return false;
     }
     if (state.validatedMineruToken === token && state.mineruValidationStatus === "valid") {
@@ -316,10 +316,10 @@ export function mountBrowserCredentialsFeature({
     const modelApiKey = apiKeyInput?.value?.trim() || "";
     if (!mineruToken || !modelApiKey) {
       if (!mineruToken) {
-        setMineruValidationMessage("请先填写 MinerU Token。", "error");
+        setMineruValidationMessage("先に MinerU Token を入力してください。", "error");
       }
       if (!modelApiKey) {
-        setDeepSeekValidationMessage("请先填写 DeepSeek Key。", "error");
+        setDeepSeekValidationMessage("先に DeepSeek Key を入力してください。", "error");
       }
       return;
     }

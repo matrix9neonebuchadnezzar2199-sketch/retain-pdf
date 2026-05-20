@@ -90,24 +90,24 @@ export function mountWorkflowFeature({
   function workflowSubmitLabel(workflow = currentWorkflow()) {
     switch (workflow) {
       case WORKFLOW_RENDER:
-        return "开始渲染";
+        return "レンダリング開始";
       case WORKFLOW_TRANSLATE:
-        return "开始翻译";
+        return "翻訳開始";
       case WORKFLOW_MINERU:
-        return hasAppliedPageRange() ? "开始翻译" : "全书翻译";
+        return hasAppliedPageRange() ? "翻訳開始" : "全文翻訳";
       default:
-        return hasAppliedPageRange() ? "开始翻译" : "全书翻译";
+        return hasAppliedPageRange() ? "翻訳開始" : "全文翻訳";
     }
   }
 
   function workflowHeadline(workflow = currentWorkflow()) {
     switch (workflow) {
       case WORKFLOW_RENDER:
-        return "当前工作流会复用已有任务产物重新生成 PDF。";
+        return "現在のワークフローは既存タスク成果物を再利用して PDF を再生成します。";
       case WORKFLOW_TRANSLATE:
-        return "上传后会执行 OCR 与正文翻译，不进入 PDF 渲染。";
+        return "アップロード後に OCR と本文翻訳を実行し、PDF レンダリングは行いません。";
       default:
-        return "上传后会执行 OCR、翻译与 PDF 渲染。";
+        return "アップロード後に OCR、翻訳、PDF レンダリングを実行します。";
     }
   }
 
@@ -118,10 +118,10 @@ export function mountWorkflowFeature({
     renderWrap?.classList.toggle("hidden", workflow !== WORKFLOW_RENDER);
     if (note) {
       note.textContent = workflow === WORKFLOW_RENDER
-        ? "render 会跳过 OCR 与翻译，直接复用已有任务产物重新渲染 PDF。"
+        ? "render は OCR と翻訳をスキップし、既存タスク成果物を再利用して PDF を再レンダリングします。"
         : workflow === WORKFLOW_TRANSLATE
-          ? "translate 会执行 OCR 与翻译，但不会进入最终 PDF 渲染。"
-          : "mineru 会完整执行 OCR、翻译与 PDF 渲染。";
+          ? "translate は OCR と翻訳を実行しますが、最終 PDF レンダリングは行いません。"
+          : "mineru は OCR、翻訳、PDF レンダリングをすべて実行します。";
     }
   }
 
@@ -178,16 +178,16 @@ export function mountWorkflowFeature({
       uploadGlyph?.classList.add("hidden");
       uploadMeta?.classList.add("hidden");
       if (fileLabel) {
-        fileLabel.textContent = "Mock 模式";
+        fileLabel.textContent = "Mock モード";
         fileLabel.title = "";
         fileLabel.classList.remove("hidden");
       }
       if (uploadHelp) {
-        uploadHelp.textContent = `当前为 mock 模式：${new URLSearchParams(window.location.search).get("mock") || "running"}。不会上传文件，也不会请求真实后端。`;
+        uploadHelp.textContent = `現在は mock モード（${new URLSearchParams(window.location.search).get("mock") || "running"}）です。ファイルはアップロードせず、実バックエンドにも接続しません。`;
         uploadHelp.classList.remove("hidden");
       }
       if (uploadStatus) {
-        uploadStatus.textContent = "Mock 模式已启用，可直接点击开始翻译。";
+        uploadStatus.textContent = "Mock モードが有効です。そのまま翻訳開始をクリックできます。";
         uploadStatus.classList.remove("hidden");
       }
       renderPageRangeSummary();
@@ -202,7 +202,7 @@ export function mountWorkflowFeature({
     uploadGlyph?.classList.toggle("hidden", !needsUpload);
     uploadMeta?.classList.toggle("hidden", !needsUpload);
     if (fileLabel && !state.uploadId) {
-      fileLabel.textContent = needsUpload ? DEFAULT_FILE_LABEL : "复用已有任务产物";
+      fileLabel.textContent = needsUpload ? DEFAULT_FILE_LABEL : "既存タスク成果物を再利用";
       fileLabel.title = "";
       fileLabel.classList.remove("hidden");
     }
@@ -213,8 +213,8 @@ export function mountWorkflowFeature({
     if (!needsUpload && uploadStatus) {
       const renderSourceJobId = currentRenderSourceJobId();
       uploadStatus.textContent = renderSourceJobId
-        ? `当前将复用任务: ${renderSourceJobId}`
-        : "请先在开发者设置里填写 Render 源任务 ID。";
+        ? `再利用するタスク: ${renderSourceJobId}`
+        : "先に開発者設定で Render ソース Job ID を入力してください。";
       uploadStatus.classList.remove("hidden");
     } else if (!state.uploadId) {
       uploadStatus?.classList.add("hidden");

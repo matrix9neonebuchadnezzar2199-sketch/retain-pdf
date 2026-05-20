@@ -12,10 +12,10 @@ function isoOffsetMinutes(minutes) {
 function buildMockJobPayload(scenario = currentMockScenario()) {
   const normalized = scenario || "running";
   const progressMap = {
-    queued: { current: 0, total: 100, percent: 0, stage: "排队中" },
-    running: { current: 62, total: 100, percent: 62, stage: "正在翻译正文与公式" },
-    succeeded: { current: 100, total: 100, percent: 100, stage: "处理完成" },
-    failed: { current: 78, total: 100, percent: 78, stage: "渲染阶段失败" },
+    queued: { current: 0, total: 100, percent: 0, stage: "待機中" },
+    running: { current: 62, total: 100, percent: 62, stage: "本文と数式を翻訳中" },
+    succeeded: { current: 100, total: 100, percent: 100, stage: "処理完了" },
+    failed: { current: 78, total: 100, percent: 78, stage: "レンダリング段階で失敗" },
   };
   const progress = progressMap[normalized];
   const status = normalized;
@@ -43,7 +43,7 @@ function buildMockJobPayload(scenario = currentMockScenario()) {
       active_stage_elapsed_ms: status === "queued" ? 42_000 : 214_000,
       total_elapsed_ms: status === "queued" ? 42_000 : 536_000,
       retry_count: status === "failed" ? 1 : 0,
-      terminal_reason: status === "failed" ? "渲染器退出码非零" : status === "succeeded" ? "completed" : "",
+      terminal_reason: status === "failed" ? "レンダラーの終了コードが非ゼロ" : status === "succeeded" ? "completed" : "",
     },
     invocation: {
       input_protocol: "stage_spec",
@@ -84,11 +84,11 @@ function buildMockJobPayload(scenario = currentMockScenario()) {
     },
     failure: status === "failed"
       ? {
-          summary: "任务失败，但这是前端 mock 场景。",
+          summary: "タスクは失敗しました（フロントエンド mock シナリオ）。",
           category: "mock_render_failure",
           stage: "render",
-          root_cause: "用于 UI 调试的模拟失败。",
-          suggestion: "切换 ?mock=succeeded 查看成功态。",
+          root_cause: "UI デバッグ用の模擬失敗です。",
+          suggestion: "?mock=succeeded に切り替えて成功状態を確認してください。",
           retryable: true,
         }
       : null,
@@ -114,7 +114,7 @@ function buildMockEvents(scenario = currentMockScenario()) {
       timestamp: isoOffsetMinutes(-10),
       level: "info",
       stage: "queued",
-      title: "任务已进入队列",
+      title: "タスクがキューに入りました",
       payload: { scenario },
     },
   ];
@@ -123,7 +123,7 @@ function buildMockEvents(scenario = currentMockScenario()) {
       timestamp: isoOffsetMinutes(-8),
       level: "info",
       stage: "translate",
-      title: "翻译阶段已开始",
+      title: "翻訳段階が開始しました",
       payload: { progress_percent: scenario === "running" ? 62 : 100 },
     });
   }
@@ -132,7 +132,7 @@ function buildMockEvents(scenario = currentMockScenario()) {
       timestamp: isoOffsetMinutes(-1),
       level: "info",
       stage: "render",
-      title: "PDF 已生成",
+      title: "PDF が生成されました",
       payload: { artifact_key: "pdf" },
     });
   }
@@ -141,7 +141,7 @@ function buildMockEvents(scenario = currentMockScenario()) {
       timestamp: isoOffsetMinutes(-1),
       level: "error",
       stage: "render",
-      title: "渲染失败",
+      title: "レンダリング失敗",
       payload: { message: "mock render failure" },
     });
   }
@@ -204,7 +204,7 @@ export function getMockJobId() {
 
 export function getMockJobPayload(jobId = "") {
   if (jobId && jobId !== MOCK_JOB_ID) {
-    throw new Error("未找到该 mock 任务，请检查 job_id 是否正确。");
+    throw new Error("mock タスクが見つかりません。job_id が正しいか確認してください。");
   }
   return buildMockJobPayload();
 }

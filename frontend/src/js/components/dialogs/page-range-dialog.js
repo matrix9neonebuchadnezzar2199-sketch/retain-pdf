@@ -8,24 +8,24 @@ class PageRangeDialog extends HTMLElement {
       <dialog id="page-range-dialog" class="desktop-dialog page-range-dialog">
         <form method="dialog" class="desktop-shell">
           <div class="desktop-head">
-            <h2 id="page-range-title">分页翻译</h2>
-            <button id="page-range-close-btn" type="submit" class="dialog-close-btn" aria-label="关闭">×</button>
+            <h2 id="page-range-title">ページ指定翻訳</h2>
+            <button id="page-range-close-btn" type="submit" class="dialog-close-btn" aria-label="閉じる">×</button>
           </div>
           <div class="desktop-body">
-            <p id="page-range-limit-text" class="muted">按页码范围限制本次翻译，页码从 1 开始。</p>
+            <p id="page-range-limit-text" class="muted">ページ範囲で今回の翻訳を制限します。ページ番号は 1 からです。</p>
             <div class="grid two">
               <label>
-                <span>起始页</span>
-                <input id="page-range-start" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="例如 1" />
+                <span>開始ページ</span>
+                <input id="page-range-start" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="例: 1" />
               </label>
               <label>
-                <span>结束页</span>
-                <input id="page-range-end" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="例如 15" />
+                <span>終了ページ</span>
+                <input id="page-range-end" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="例: 15" />
               </label>
             </div>
             <div class="actions">
-              <button id="page-range-clear-btn" type="button" class="secondary">清空</button>
-              <button id="page-range-apply-btn" type="button">应用</button>
+              <button id="page-range-clear-btn" type="button" class="secondary">クリア</button>
+              <button id="page-range-apply-btn" type="button">適用</button>
             </div>
           </div>
         </form>

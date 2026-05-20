@@ -181,7 +181,7 @@ export function applyKeyInputs(mineruToken, modelApiKey) {
 
 export async function desktopInvoke(command, args = {}) {
   if (!desktopBridge) {
-    throw new Error("桌面接口不可用");
+    throw new Error("デスクトップ API は利用できません");
   }
   return desktopBridge.invoke(command, args);
 }

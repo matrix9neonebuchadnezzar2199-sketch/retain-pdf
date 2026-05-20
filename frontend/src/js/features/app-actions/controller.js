@@ -42,26 +42,26 @@ export function mountAppActionsFeature({
     }
     if (state.desktopMode && !state.desktopConfigured && workflowNeedsCredentials(workflow)) {
       openSetupDialog();
-      setText("error-box", "请先完成首次配置。");
+      setText("error-box", "先に初回設定を完了してください。");
       return;
     }
     if (workflowNeedsUpload(workflow) && !state.uploadId) {
-      setText("error-box", "请先选择并上传 PDF 文件");
+      setText("error-box", "先に PDF ファイルを選択してアップロードしてください");
       return;
     }
     if (!workflowNeedsUpload(workflow) && !currentRenderSourceJobId()) {
-      setText("error-box", "请先在开发者设置里填写 Render 源任务 ID。");
+      setText("error-box", "先に開発者設定で Render ソース Job ID を入力してください。");
       return;
     }
     if (workflowNeedsCredentials(workflow) && !(await getBrowserCredentialsFeature()?.ensureMineruTokenReady({
       onMissingToken: () => {
-        setText("error-box", "请先填写 MinerU Token。");
+        setText("error-box", "先に MinerU Token を入力してください。");
         if (!state.desktopMode) {
           getBrowserCredentialsFeature()?.openBrowserCredentialsDialog();
         }
       },
       onInvalidToken: (result) => {
-        setText("error-box", result.summary || "MinerU Token 校验未通过。");
+        setText("error-box", result.summary || "MinerU Token の検証に合格しませんでした。");
         if (!state.desktopMode) {
           getBrowserCredentialsFeature()?.openBrowserCredentialsDialog();
         }
@@ -94,7 +94,7 @@ export function mountAppActionsFeature({
         throw new Error(`health ${resp.status}`);
       }
     } catch (_err) {
-      setText("error-box", `当前前端无法连接后端。API Base: ${apiBase()}。请确认本地服务已经启动，然后重试。`);
+      setText("error-box", `フロントエンドがバックエンドに接続できません。API Base: ${apiBase()}。ローカルサービスが起動しているか確認してから再試行してください。`);
     }
   }
 
@@ -102,10 +102,10 @@ export function mountAppActionsFeature({
     const mineruToken = $("setup-mineru-token").value.trim();
     const modelApiKey = $("setup-model-api-key").value.trim();
     if (!mineruToken || !modelApiKey) {
-      setDesktopBusy("请先填写 MinerU Token 和 Model API Key。");
+      setDesktopBusy("先に MinerU Token と Model API Key を入力してください。");
       return;
     }
-    setDesktopBusy("正在保存配置并启动服务…");
+    setDesktopBusy("設定を保存してサービスを起動しています…");
     try {
       await saveDesktopConfig(mineruToken, modelApiKey, checkApiConnectivity);
       onDesktopConfigSaved?.();

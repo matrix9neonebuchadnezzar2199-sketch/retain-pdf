@@ -105,10 +105,10 @@ function resolveLiveDurations(job) {
 function summarizeMathMode(job) {
   const mathMode = `${job?.request_payload_math_mode || ""}`.trim();
   if (mathMode === "placeholder") {
-    return "placeholder - 公式占位保护";
+    return "placeholder - 数式プレースホルダ保護";
   }
   if (mathMode === "direct_typst") {
-    return "direct_typst - 模型直出公式";
+    return "direct_typst - モデル直出し数式";
   }
   return mathMode || "-";
 }
@@ -176,7 +176,7 @@ function renderStageHistory(job) {
   list.classList.remove("hidden");
   list.innerHTML = history.map((entry, index) => {
     const enterAt = entry?.enter_at ? formatEventTimestamp(entry.enter_at) : "-";
-    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "进行中");
+    const exitAt = entry?.exit_at ? formatEventTimestamp(entry.exit_at) : (isTerminalStatus(job.status) ? "-" : "進行中");
     const terminalText = entry?.terminal_status ? ` · ${entry.terminal_status}` : "";
     return `
       <article class="detail-stage-item">
@@ -198,7 +198,7 @@ function renderEvents(eventsPayload) {
     return;
   }
   const items = Array.isArray(eventsPayload?.items) ? eventsPayload.items : [];
-  status.textContent = items.length > 0 ? `全部事件 · ${items.length} 条` : "全部事件";
+  status.textContent = items.length > 0 ? `全イベント · ${items.length} 件` : "全イベント";
   if (items.length === 0) {
     list.innerHTML = "";
     list.classList.add("hidden");
@@ -294,15 +294,15 @@ function setEventsStatus(text) {
 
 async function ensureEventsLoaded() {
   if (detailPageState.eventsPayload) {
-    setEventsStatus(`全部事件 · ${Array.isArray(detailPageState.eventsPayload.items) ? detailPageState.eventsPayload.items.length : 0} 条`);
+    setEventsStatus(`全イベント · ${Array.isArray(detailPageState.eventsPayload.items) ? detailPageState.eventsPayload.items.length : 0} 件`);
     renderEvents(detailPageState.eventsPayload);
     return detailPageState.eventsPayload;
   }
   if (!detailPageState.job?.job_id) {
-    throw new Error("缺少 job_id，无法加载事件流。");
+    throw new Error("job_id がありません。イベントストリームを読み込めません。");
   }
   if (!detailPageState.eventsLoadingPromise) {
-    setEventsStatus("正在加载全部事件...");
+    setEventsStatus("全イベントを読み込み中...");
     detailPageState.eventsLoadingPromise = fetchAllJobEvents(detailPageState.job.job_id)
       .then((payload) => {
         detailPageState.eventsPayload = payload;
@@ -310,7 +310,7 @@ async function ensureEventsLoaded() {
         return payload;
       })
       .catch((error) => {
-        setEventsStatus(error.message || "读取事件流失败。");
+        setEventsStatus(error.message || "イベントストリームの読み込みに失敗しました。");
         throw error;
       })
       .finally(() => {
@@ -325,7 +325,7 @@ function bindEventsLauncher() {
     setModalOpen("detail-events-modal", true);
     try {
       await ensureEventsLoaded();
-      $("detail-open-events-btn").textContent = "查看";
+      $("detail-open-events-btn").textContent = "表示";
     } catch (_error) {
       // Status text already updated in ensureEventsLoaded.
     }
@@ -338,13 +338,13 @@ async function initializePage() {
   bindEventsLauncher();
   const jobId = getJobIdFromQuery();
   if (!jobId) {
-    setText("detail-head-note", "缺少 job_id，请通过 detail.html?job_id=... 打开。");
+    setText("detail-head-note", "job_id がありません。detail.html?job_id=... で開いてください。");
     return;
   }
   setText("detail-job-id", jobId);
   setText("detail-head-note", isMockMode()
-    ? "当前为 mock 明细页，可直接分享当前链接。"
-    : "当前详情页可直接通过 URL 分享给其他人。");
+    ? "現在は mock 詳細ページです。現在のリンクをそのまま共有できます。"
+    : "この詳細ページは URL で他の人と共有できます。");
 
   const [payloadRaw, manifestPayload] = await Promise.all([
     fetchJobPayload(jobId, API_PREFIX),
@@ -378,9 +378,9 @@ async function initializePage() {
   setText("detail-failure-root-cause", summarizeRuntimeField(failure.root_cause || failureDiagnostic.root_cause));
   setText("detail-failure-suggestion", summarizeRuntimeField(failure.suggestion || failureDiagnostic.suggestion));
   setText("detail-failure-last-log-line", summarizeRuntimeField(failure.last_log_line || failureDiagnostic.last_log_line));
-  setText("detail-failure-retryable", typeof retryable === "boolean" ? (retryable ? "是" : "否") : "-");
+  setText("detail-failure-retryable", typeof retryable === "boolean" ? (retryable ? "はい" : "いいえ") : "-");
   setText("detail-error-box", summarizePublicError(job));
-  setEventsStatus("尚未加载");
+  setEventsStatus("未読込");
 
   const readerEnabled = Boolean(
     job?.job_id

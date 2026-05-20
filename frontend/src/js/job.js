@@ -223,17 +223,17 @@ export function resolveJobActions(job) {
 export function summarizeStatus(status) {
   switch (status) {
     case "queued":
-      return "任务已提交，等待后端开始处理。";
+      return "タスクを送信しました。バックエンドの処理開始を待っています。";
     case "running":
-      return "任务正在处理中，请等待当前阶段完成。";
+      return "タスクを処理中です。現在の段階が完了するまでお待ちください。";
     case "succeeded":
-      return "任务已完成，可以下载结果。";
+      return "タスクが完了しました。結果をダウンロードできます。";
     case "canceled":
-      return "任务已取消。";
+      return "タスクはキャンセルされました。";
     case "failed":
-      return "任务已失败，请检查报错提示后重试。";
+      return "タスクは失敗しました。エラー内容を確認してから再試行してください。";
     default:
-      return "等待提交任务。";
+      return "タスクの送信を待っています。";
   }
 }
 
@@ -249,13 +249,13 @@ export function summarizeStageDetail(payload) {
   }
   switch (payload.status) {
     case "queued":
-      return "排队中";
+      return "待機中";
     case "running":
-      return "后端正在处理当前文档";
+      return "バックエンドがドキュメントを処理中";
     case "succeeded":
-      return "处理完成";
+      return "処理完了";
     case "failed":
-      return "处理失败";
+      return "処理失敗";
     default:
       return "-";
   }
@@ -263,7 +263,7 @@ export function summarizeStageDetail(payload) {
 
 export function summarizePublicError(payload) {
   if (payload.status === "canceled") {
-    return "任务已取消。";
+    return "タスクはキャンセルされました。";
   }
   if (payload.status === "failed") {
     const detail = firstNonEmpty(
@@ -274,7 +274,7 @@ export function summarizePublicError(payload) {
       payload.error,
       payload.raw_response?.message,
     );
-    return detail || "任务失败。请检查输入文件与配置后重试。";
+    return detail || "タスクに失敗しました。入力ファイルと設定を確認してから再試行してください。";
   }
   if (payload.error) {
     return payload.error;
@@ -286,22 +286,22 @@ export function summarizeDiagnostic(payload) {
   const failure = payload.failure;
   if (failure) {
     const lines = [
-      `阶段: ${failure.stage || "-"}`,
-      `分类: ${failure.category || "-"}`,
-      `摘要: ${failure.summary || "-"}`,
-      `可重试: ${failure.retryable ? "是" : "否"}`,
+      `段階: ${failure.stage || "-"}`,
+      `分類: ${failure.category || "-"}`,
+      `概要: ${failure.summary || "-"}`,
+      `リトライ可: ${failure.retryable ? "はい" : "いいえ"}`,
     ];
     if (failure.upstream_host) {
-      lines.push(`上游主机: ${failure.upstream_host}`);
+      lines.push(`上流ホスト: ${failure.upstream_host}`);
     }
     if (failure.root_cause) {
-      lines.push(`根因: ${failure.root_cause}`);
+      lines.push(`根本原因: ${failure.root_cause}`);
     }
     if (failure.suggestion) {
-      lines.push(`建议: ${failure.suggestion}`);
+      lines.push(`提案: ${failure.suggestion}`);
     }
     if (failure.last_log_line) {
-      lines.push(`最后日志: ${failure.last_log_line}`);
+      lines.push(`直近ログ: ${failure.last_log_line}`);
     }
     return lines.join("\n");
   }
@@ -310,22 +310,22 @@ export function summarizeDiagnostic(payload) {
     return "-";
   }
   const lines = [
-    `阶段: ${diag.stage || diag.failed_stage || "-"}`,
-    `类型: ${diag.type || diag.error_kind || "-"}`,
-    `摘要: ${diag.summary || "-"}`,
-    `可重试: ${diag.retryable ? "是" : "否"}`,
+    `段階: ${diag.stage || diag.failed_stage || "-"}`,
+    `種別: ${diag.type || diag.error_kind || "-"}`,
+    `概要: ${diag.summary || "-"}`,
+    `リトライ可: ${diag.retryable ? "はい" : "いいえ"}`,
   ];
   if (diag.upstream_host) {
-    lines.push(`上游主机: ${diag.upstream_host}`);
+    lines.push(`上流ホスト: ${diag.upstream_host}`);
   }
   if (diag.root_cause) {
-    lines.push(`根因: ${diag.root_cause}`);
+    lines.push(`根本原因: ${diag.root_cause}`);
   }
   if (diag.suggestion) {
-    lines.push(`建议: ${diag.suggestion}`);
+    lines.push(`提案: ${diag.suggestion}`);
   }
   if (diag.last_log_line) {
-    lines.push(`最后日志: ${diag.last_log_line}`);
+    lines.push(`直近ログ: ${diag.last_log_line}`);
   }
   return lines.join("\n");
 }
@@ -340,7 +340,7 @@ function formatDurationMs(ms) {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
   if (hours > 0) {
-    return `${hours}小时 ${minutes}分 ${seconds}秒`;
+    return `${hours}時間 ${minutes}分 ${seconds}秒`;
   }
   if (minutes > 0) {
     return `${minutes}分 ${seconds}秒`;
@@ -366,7 +366,7 @@ export function formatEventTimestamp(value) {
   if (Number.isNaN(parsed.getTime())) {
     return rawValue;
   }
-  return new Intl.DateTimeFormat("zh-CN", {
+  return new Intl.DateTimeFormat("ja-JP", {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
@@ -390,7 +390,7 @@ export function formatJobFinishedAt(payload) {
     return rawValue;
   }
 
-  return new Intl.DateTimeFormat("zh-CN", {
+  return new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -422,7 +422,7 @@ export function formatJobDuration(payload) {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
   if (hours > 0) {
-    return `${hours}小时 ${minutes}分 ${seconds}秒`;
+    return `${hours}時間 ${minutes}分 ${seconds}秒`;
   }
   if (minutes > 0) {
     return `${minutes}分 ${seconds}秒`;

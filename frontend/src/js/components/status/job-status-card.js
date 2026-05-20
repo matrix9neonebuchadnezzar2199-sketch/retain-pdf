@@ -14,8 +14,8 @@ class JobStatusCard extends HTMLElement {
       <div class="status-ring-shell">
         <div class="status-focus-card">
           <div id="status-stage-icon" class="status-stage-icon" aria-hidden="true"></div>
-          <div id="status-ring-label" class="status-ring-label">等待中</div>
-          <div id="status-ring-value" class="status-ring-value">准备中</div>
+          <div id="status-ring-label" class="status-ring-label">待機中</div>
+          <div id="status-ring-value" class="status-ring-value">準備中</div>
           <div id="status-ring-elapsed" class="status-ring-elapsed">0秒</div>
           <div class="status-progress-block">
             <div class="progress-track"><div id="job-progress-bar" class="progress-bar"></div></div>
@@ -40,7 +40,7 @@ class JobStatusCard extends HTMLElement {
     `;
   }
 
-  setStagePresentation({ label = "等待中", value = "准备中", iconMarkup = "" } = {}) {
+  setStagePresentation({ label = "待機中", value = "準備中", iconMarkup = "" } = {}) {
     const labelEl = this.querySelector("#status-ring-label");
     const valueEl = this.querySelector("#status-ring-value");
     const iconEl = this.querySelector("#status-stage-icon");
@@ -105,8 +105,8 @@ class JobStatusCard extends HTMLElement {
   }
 
   renderSnapshot({
-    label = "等待中",
-    value = "准备中",
+    label = "待機中",
+    value = "準備中",
     iconMarkup = "",
     elapsed = "-",
     progressCurrent = NaN,
