@@ -42,7 +42,7 @@ class DeveloperSettingsDialog extends HTMLElement {
                     </select>
                   </label>
                   <label id="developer-render-source-wrap" class="hidden">
-                    <span>Render ソース Job ID</span>
+                    <span>レンダー元タスク ID</span>
                     <input id="developer-render-source-job-id" type="text" autocomplete="off" placeholder="既存の job_id を入力" />
                   </label>
                   <p id="developer-workflow-note" class="muted">\`mineru\` は OCR、翻訳、PDF レンダリングをすべて実行します。</p>

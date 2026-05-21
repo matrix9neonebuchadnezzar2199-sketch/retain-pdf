@@ -140,7 +140,7 @@ Docker イメージ:
 
 - 文言の変更は主に `frontend/` 配下（HTML・Web Components・JS）
 - 上流の中国語 README は `README.zh-CN.md` に退避（初回日本語化時に追加）
-- バックエンド `doc/` の中国語ドキュメントは未翻訳（API 契約は `doc/API.md` 等を参照）
+- `doc/` 配下の技術ドキュメントは日本語化済み（プロジェクト README の中国語版は `README.zh-CN.md`）
 
 ### ローカル起動（フロントのみ確認）
 
@@ -155,12 +155,13 @@ Playwright（OCR 再スキャン等）を使う場合:
 uv run playwright install chromium
 ```
 
-### ドキュメント（上流・中国語）
+### ドキュメント（日本語）
 
 - [API ドキュメント](doc/API.md)
 - [doc 目次](doc/README.md)
 - [ローカル起動と設定](doc/api-dev.md)
-- [エラー排查](doc/api-troubleshooting.md)
+- [トラブルシュート](doc/api-troubleshooting.md)
+- [Docker デプロイ](docker/delivery/README.md)
 
 ### ディレクトリ構成
 

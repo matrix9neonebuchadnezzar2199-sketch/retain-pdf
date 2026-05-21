@@ -1,15 +1,15 @@
-# 存储结构
+# ストレージ構造
 
-当前统一使用 `DATA_ROOT` 作为运行时根目录。
+現在は `DATA_ROOT` をランタイムルートとして統一利用します。
 
-## 1. 主要路径
+## 1. 主要パス
 
-- `DATA_ROOT/uploads/`：上传文件
-- `DATA_ROOT/jobs/{job_id}/`：单任务工作目录
-- `DATA_ROOT/downloads/`：下载缓存
-- `DATA_ROOT/db/jobs.db`：SQLite
+- `DATA_ROOT/uploads/`: アップロードファイル
+- `DATA_ROOT/jobs/{job_id}/`: 単一タスクの作業ディレクトリ
+- `DATA_ROOT/downloads/`: ダウンロードキャッシュ
+- `DATA_ROOT/db/jobs.db`: SQLite
 
-## 2. 任务目录结构
+## 2. タスクディレクトリ構造
 
 ```text
 jobs/{job_id}/
@@ -21,15 +21,15 @@ jobs/{job_id}/
 └── logs/
 ```
 
-## 3. 事件文件
+## 3. イベントファイル
 
-任务事件会同时写入：
+タスクイベントは次の両方に書き込まれます。
 
 - `DATA_ROOT/jobs/{job_id}/logs/events.jsonl`
 
-## 4. 当前设计约定
+## 4. 現在の設計上の約束
 
-- `DATA_ROOT` 是唯一运行时存储根
-- Rust 负责分配任务目录
-- Python worker 只消费 Rust 传入的路径
-- SQLite 当前承担 `jobs / events / artifacts` 三类持久化信息
+- `DATA_ROOT` が唯一のランタイムストレージルート
+- Rust がタスクディレクトリを割り当て
+- Python worker は Rust から渡されたパスのみを消費
+- SQLite は現在 `jobs` / `events` / `artifacts` の 3 種の永続化を担当

@@ -189,7 +189,7 @@ async function downloadProtectedResource(fetchProtected, url, fallbackName, pref
   const resp = await fetchProtected(url);
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`ダウンロードに失敗しました: ${resp.status} ${text || "unknown error"}`);
+    throw new Error(`ダウンロードに失敗しました: ${resp.status} ${text || "不明なエラー"}`);
   }
   const blob = await resp.blob();
   const disposition = resp.headers.get("content-disposition") || "";
@@ -201,7 +201,7 @@ async function fetchProtectedBytes(fetchProtected, url, label) {
   const resp = await fetchProtected(url);
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`${label}の読み込みに失敗しました: ${resp.status} ${text || "unknown error"}`);
+    throw new Error(`${label}の読み込みに失敗しました: ${resp.status} ${text || "不明なエラー"}`);
   }
   return resp.arrayBuffer();
 }

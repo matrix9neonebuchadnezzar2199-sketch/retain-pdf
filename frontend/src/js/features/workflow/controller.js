@@ -214,7 +214,7 @@ export function mountWorkflowFeature({
       const renderSourceJobId = currentRenderSourceJobId();
       uploadStatus.textContent = renderSourceJobId
         ? `再利用するタスク: ${renderSourceJobId}`
-        : "先に開発者設定で Render ソース Job ID を入力してください。";
+        : "先に開発者設定でレンダー元タスク IDを入力してください。";
       uploadStatus.classList.remove("hidden");
     } else if (!state.uploadId) {
       uploadStatus?.classList.add("hidden");

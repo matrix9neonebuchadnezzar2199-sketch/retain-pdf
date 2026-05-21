@@ -13,7 +13,7 @@ class StatusDetailDialog extends HTMLElement {
               <div class="status-detail-head-copy">
                 <div class="status-detail-head-top">
                   <h2>タスク詳細</h2>
-                  <p class="status-detail-job-meta">Job ID <span id="status-detail-job-id" class="status-detail-job-id mono">-</span></p>
+                  <p class="status-detail-job-meta">タスク ID <span id="status-detail-job-id" class="status-detail-job-id mono">-</span></p>
                 </div>
                 <p id="status-detail-head-note" class="status-panel-note">タスク概要・失敗原因・イベントストリームを表示</p>
               </div>

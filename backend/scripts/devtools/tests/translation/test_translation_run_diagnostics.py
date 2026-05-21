@@ -351,7 +351,7 @@ class StructuredFailureClassificationTests(unittest.TestCase):
         except requests.HTTPError as exc:
             failure = classify_exception(exc, default_stage="translation", provider="translation")
         self.assertEqual(failure.error_type, "auth_failed")
-        self.assertEqual(failure.summary, "鉴权失败")
+        self.assertEqual(failure.summary, "認証に失敗しました")
         self.assertFalse(failure.retryable)
 
 

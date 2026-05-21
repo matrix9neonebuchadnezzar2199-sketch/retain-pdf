@@ -50,7 +50,7 @@ export function mountAppActionsFeature({
       return;
     }
     if (!workflowNeedsUpload(workflow) && !currentRenderSourceJobId()) {
-      setText("error-box", "先に開発者設定で Render ソース Job ID を入力してください。");
+      setText("error-box", "先に開発者設定でレンダー元タスク IDを入力してください。");
       return;
     }
     if (workflowNeedsCredentials(workflow) && !(await getBrowserCredentialsFeature()?.ensureMineruTokenReady({

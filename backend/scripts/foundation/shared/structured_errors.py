@@ -80,15 +80,15 @@ def classify_exception(exc: BaseException, *, default_stage: str, provider: str 
     http_status_code = _http_status_code(exc, f"{detail}\n{raw_traceback}")
 
     error_type = "python_unhandled_exception"
-    summary = "任务失败，但暂未识别出明确根因"
+    summary = "タスクは失敗しましたが、明確な根本原因は特定できませんでした"
     retryable = True
 
     if any(token in lowered for token in ("failed to resolve", "temporary failure in name resolution", "nameresolutionerror", "socket.gaierror")):
         error_type = "dns_resolution_failed"
-        summary = "外部服务域名解析失败"
+        summary = "外部サービスのドメイン名解決に失敗しました"
     elif any(token in lowered for token in ("readtimeout", "connecttimeout", "timed out")):
         error_type = "upstream_timeout"
-        summary = "外部服务请求超时"
+        summary = "外部サービスへのリクエストがタイムアウトしました"
     elif http_status_code in {401, 403} or any(
         token in lowered
         for token in (
@@ -101,11 +101,11 @@ def classify_exception(exc: BaseException, *, default_stage: str, provider: str 
         )
     ):
         error_type = "auth_failed"
-        summary = "鉴权失败"
+        summary = "認証に失敗しました"
         retryable = False
     elif http_status_code == 400:
         error_type = "upstream_bad_request"
-        summary = "上游服务拒绝请求（400）"
+        summary = "上流サービスがリクエストを拒否しました（400）"
         retryable = False
     elif any(
         token in lowered
@@ -117,33 +117,33 @@ def classify_exception(exc: BaseException, *, default_stage: str, provider: str 
         )
     ):
         error_type = "placeholder_unstable"
-        summary = "公式占位符校验失败"
+        summary = "数式プレースホルダの検証に失敗しました"
     elif any(token in lowered for token in ("failed to download package", "packages.typst.org", "downloading @preview/")):
         error_type = "typst_dependency_download_failed"
-        summary = "Typst 渲染依赖下载失败"
+        summary = "Typst レンダリング依存のダウンロードに失敗しました"
     elif any(token in lowered for token in ("typst compile", "typst error", "render failed", "failed to render", "font not found", "missing bundled font")):
         error_type = "render_failed"
-        summary = "排版或编译阶段失败"
+        summary = "組版またはコンパイル段階で失敗しました"
         retryable = False
         stage = "render"
     elif any(token in lowered for token in ("jsondecodeerror", "expecting value", "extra data", "invalid control character")):
         error_type = "json_decode_failed"
-        summary = "OCR 结果 JSON 解析失败"
+        summary = "OCR 結果 JSON の解析に失敗しました"
         stage = "normalization"
         retryable = False
     elif any(token in lowered for token in ("validationerror", "normalized document schema validation failed")):
         error_type = "document_schema_validation_failed"
-        summary = "标准化文档校验失败"
+        summary = "標準化ドキュメントの検証に失敗しました"
         stage = "normalization"
         retryable = False
     elif "source pdf not found" in lowered:
         error_type = "source_pdf_missing"
-        summary = "源 PDF 缺失"
+        summary = "元 PDF がありません"
         stage = "normalization"
         retryable = False
     elif any(token in lowered for token in ("fitz.fitzerror", "pymupdf", "cannot open broken document", "file data error")):
         error_type = "source_pdf_open_failed"
-        summary = "源 PDF 打开失败"
+        summary = "元 PDF を開けませんでした"
         stage = "normalization"
         retryable = False
 

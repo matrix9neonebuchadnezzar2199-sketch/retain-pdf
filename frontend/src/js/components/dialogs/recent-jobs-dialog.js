@@ -19,7 +19,7 @@ class RecentJobsDialog extends HTMLElement {
               <input id="recent-jobs-date" type="date" aria-label="日付を選択" />
               <button id="refresh-jobs-btn" class="secondary" type="button">一覧を更新</button>
             </div>
-            <div id="recent-jobs-summary" class="status-panel-note">Stage Spec 0 · Legacy CLI 0 · Unknown 0</div>
+            <div id="recent-jobs-summary" class="status-panel-note">Stage Spec 0 · 不明 0</div>
             <div id="recent-jobs-empty" class="events-empty hidden">最近のタスクはありません</div>
             <div id="recent-jobs-list" class="recent-jobs-list hidden"></div>
             <div class="recent-jobs-more-row">

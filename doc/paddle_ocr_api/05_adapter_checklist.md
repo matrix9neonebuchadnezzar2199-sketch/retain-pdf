@@ -1,56 +1,48 @@
 # 05 Adapter Checklist
 
-## 任务定义
+## タスク定義
 
-安排一个人去适配 Paddle OCR 时，建议直接按下面交付：
+### 入力
 
-### 输入
+- Paddle OCR 生 JSON
+- 最小 fixture 1 つ以上
+- より完全な fixture 1 つ以上
 
-- Paddle OCR 原始 JSON
-- 至少一个最小 fixture
-- 至少一个较完整 fixture
+### 出力
 
-### 输出
+- 登録可能な Paddle adapter
+- `document.v1` 出力
+- 対応ドキュメントとテスト
 
-- 可注册的 Paddle adapter
-- `document.v1` 输出
-- 对应文档
-- 对应测试
-
-## 文件范围
-
-允许修改：
+## 変更可能範囲
 
 - `doc/paddle_ocr_api/*`
 - `backend/scripts/services/document_schema/provider_adapters/paddle/*`
-- `backend/scripts/services/document_schema/adapters.py`
-- `backend/scripts/services/document_schema/providers.py`
+- `adapters.py`, `providers.py`
 - `backend/scripts/devtools/tests/document_schema/fixtures/*`
-- `backend/scripts/devtools/tests/document_schema/regression_check.py`
+- `regression_check.py`
 
-不要修改：
+変更しない:
 
-- `backend/scripts/services/translation/*`
-- `backend/scripts/services/rendering/*`
-- `backend/scripts/runtime/pipeline/*`
+- `services/translation/*`
+- `services/rendering/*`
+- `runtime/pipeline/*`
 
-例外：
+例外: メイン契約に安定フィールド追加が本当に必要なときは `document_schema` へ先に提案。
 
-- 只有当主契约确实需要新增稳定字段时，才允许先提案，再改 `document_schema`
+## 接続順序
 
-## 接入顺序
+1. Paddle 生返却形式の確認
+2. トップ/ページ/block フィールド整理
+3. 配置方針の確定
+4. detector 実装
+5. adapter 実装
+6. `continuation_hint` マッピング
+7. fixture 追加
+8. 回帰実行
+9. ドキュメント更新
 
-1. 确认 Paddle 原始返回格式
-2. 梳理顶层/页级/block 级字段
-3. 明确字段落位
-4. 实现 detector
-5. 实现 adapter
-6. 实现 `continuation_hint` 映射
-7. 补 fixture
-8. 跑回归
-9. 更新文档
-
-## 验收命令
+## 検証コマンド
 
 ```bash
 PYTHONPATH=backend/scripts python backend/scripts/devtools/tests/document_schema/regression_check.py
@@ -58,23 +50,21 @@ PYTHONPATH=backend/scripts python -m pytest backend/scripts/devtools/tests/docum
 PYTHONPATH=backend/scripts python -m pytest backend/scripts/devtools/tests/translation -q
 ```
 
-## 必查项
+## 必須確認
 
-- provider 检测是否稳定
-- `document.v1` 是否通过 schema 校验
-- `source.provider` 是否正确写成 `paddle`
-- `type/sub_type/tags/derived` 是否符合当前契约
-- `metadata/source` 是否保留了必要 trace
-- `continuation_hint` 是否只在可靠时写入
-- `skip_translation` 标记是否只给该跳过的块
+- provider 検出の安定性
+- `document.v1` の schema 検証
+- `source.provider == paddle`
+- `type/sub_type/tags/derived` の契約適合
+- 必要 trace が `metadata/source` に残っている
+- `continuation_hint` は信頼できるときだけ
+- `skip_translation` はスキップ対象 block のみ
 
-## 交付说明模板
+## 提出テンプレート
 
-适配人提交时，至少应说明：
-
-1. 支持了哪个 Paddle API 返回格式
-2. 用了哪些 fixture
-3. 新增或修改了哪些字段映射
-4. 哪些 Paddle 字段被故意不接
-5. 是否写入了 `continuation_hint`
-6. 测试命令和结果
+1. 対応した Paddle API 返却形式
+2. 使用 fixture
+3. 追加・変更したマッピング
+4. 意図的に接続しない Paddle フィールド
+5. `continuation_hint` を書いたか
+6. テストコマンドと結果

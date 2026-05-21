@@ -1,43 +1,37 @@
-# Paddle OCR 对接文档
+# Paddle OCR 連携ドキュメント
 
-这套文档只服务一件事：
+本ドキュメント群の目的は 1 つです。
 
-- 把 Paddle OCR 原始返回结果稳定收敛成 `normalized_document_v1`
+- Paddle OCR の生返却を、安定して `normalized_document_v1` に収束させる
 
-不要把这里写成翻译规则文档，也不要把渲染策略塞进来。
+翻訳ルール書やレンダ戦略はここに書かない。
 
-## 对接边界
+## 連携境界
 
-适配 Paddle OCR 的同学只负责：
+Paddle OCR 担当者が行うこと:
 
-1. 理解 Paddle 原始 API 和 JSON 结构
-2. 实现 provider 探测与 adapter
-3. 把 Paddle 私有字段映射到 `document.v1`
-4. 补 fixture、回归测试和文档
+1. Paddle 生 API と JSON 構造の理解
+2. provider 検出と adapter の実装
+3. Paddle 私有フィールドから `document.v1` へのマッピング
+4. fixture・回帰テスト・ドキュメントの整備
 
-明确不负责：
+行わないこと:
 
-1. 不改翻译层 `services/translation/*`
-2. 不改渲染层 `services/rendering/*`
-3. 不在 `runtime/pipeline/*` 里写 Paddle 私有特判
-4. 不让下游直接读取 Paddle raw JSON
+1. `services/translation/*` の変更
+2. `services/rendering/*` の変更
+3. `runtime/pipeline/*` への Paddle 私有分岐
+4. 下流が Paddle raw JSON を直接読む設計
 
-## 当前代码入口
+## 現在のコード入口
 
-- provider 注册入口：
-  `backend/scripts/services/document_schema/adapters.py`
-- provider 常量：
-  `backend/scripts/services/document_schema/providers.py`
-- Paddle adapter 入口：
-  `backend/scripts/services/document_schema/provider_adapters/paddle/adapter.py`
-- Paddle page reader：
-  `backend/scripts/services/document_schema/provider_adapters/paddle/page_reader.py`
-- Paddle block reader：
-  `backend/scripts/services/document_schema/provider_adapters/paddle/block_reader.py`
-- 通用契约说明：
-  `backend/scripts/services/document_schema/README.md`
+- provider 登録: `backend/scripts/services/document_schema/adapters.py`
+- provider 定数: `backend/scripts/services/document_schema/providers.py`
+- Paddle adapter: `backend/scripts/services/document_schema/provider_adapters/paddle/adapter.py`
+- page reader: `backend/scripts/services/document_schema/provider_adapters/paddle/page_reader.py`
+- block reader: `backend/scripts/services/document_schema/provider_adapters/paddle/block_reader.py`
+- 共通契約: `backend/scripts/services/document_schema/README.md`
 
-## 阅读顺序
+## 読む順序
 
 1. [00_overview.md](./00_overview.md)
 2. [01_response_shape.md](./01_response_shape.md)
@@ -46,9 +40,9 @@
 5. [04_continuation_hint.md](./04_continuation_hint.md)
 6. [05_adapter_checklist.md](./05_adapter_checklist.md)
 
-## 对接原则
+## 連携原則
 
-1. Paddle 私有字段只允许留在 adapter 层和 trace 层。
-2. 下游主链路只消费 `document.v1.json`。
-3. 如果 Paddle 已经识别出连续段落组，写入 `continuation_hint`，不要把 `group_id` 之类的私有字段直接泄漏给 translation。
-4. 先保证 schema 正确，再做语义增强；不要一上来就堆规则。
+1. Paddle 私有フィールドは adapter 層と trace 層に留める。
+2. 下流メインチェーンは `document.v1.json` のみ消費。
+3. Paddle が連続段落を識別している場合は `continuation_hint` に写し、`group_id` 等を translation に漏らさない。
+4. まず schema を正しくし、意味論強化は後回し。

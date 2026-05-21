@@ -130,8 +130,8 @@ function maybeShowCloseToTrayHint() {
   if (process.platform === "win32" && typeof tray.displayBalloon === "function") {
     tray.displayBalloon({
       iconType: "info",
-      title: "RetainPDF 正在后台运行",
-      content: "窗口已隐藏到系统托盘，本地 API 仍可继续使用。右键托盘图标可退出。",
+      title: "RetainPDF はバックグラウンドで実行中",
+      content: "ウィンドウはシステムトレイに格納されました。ローカル API は引き続き利用できます。トレイアイコンを右クリックして終了できます。",
     });
   }
   persistCloseToTrayHintShown();
@@ -146,13 +146,13 @@ function createTray() {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       {
-        label: "显示主窗口",
+        label: "メインウィンドウを表示",
         click: () => {
           showMainWindow();
         },
       },
       {
-        label: "退出",
+        label: "終了",
         click: () => {
           isQuitting = true;
           app.quit();
@@ -203,7 +203,7 @@ async function createSplashWindow() {
     },
   });
   await splashWindow.loadFile(path.join(__dirname, "splash.html"));
-  updateSplashProgress(6, "正在准备运行环境", "正在检查桌面组件与本地资源");
+  updateSplashProgress(6, "実行環境を準備しています", "デスクトップコンポーネントとローカルリソースを確認中");
 }
 
 function waitForPort(host, port, timeoutMs) {
@@ -471,7 +471,7 @@ function resolveTypstBinary(backendRoot) {
 }
 
 async function startBundledBackend() {
-  updateSplashProgress(18, "正在检查运行文件", "正在校验后端、Python 和脚本资源");
+  updateSplashProgress(18, "実行ファイルを確認しています", "バックエンド・Python・スクリプトリソースを検証中");
   const backendRoot = resolveBackendRoot();
   const backendBin = resolveBackendBinary(backendRoot);
   let pythonRuntime = resolvePythonRuntime(backendRoot);
@@ -503,7 +503,7 @@ async function startBundledBackend() {
       console.warn(
         `[desktop] bundled mac python probe failed, fallback to system python: ${bundledProbe.reason}\n${bundledProbe.stderr || ""}`.trim(),
       );
-      updateSplashProgress(26, "正在检查 Python 运行时", "内置 Python 不可用，正在回退系统 Python");
+      updateSplashProgress(26, "Python ランタイムを確認しています", "同梱 Python が使えないため、システム Python にフォールバック中");
       const fallbackRuntime = resolveSystemPythonRuntime();
       const fallbackProbe = await probePythonRuntime(fallbackRuntime);
       if (fallbackProbe.ok) {
@@ -519,25 +519,25 @@ async function startBundledBackend() {
   fs.mkdirSync(dataRoot, { recursive: true });
   fs.mkdirSync(rustApiRoot, { recursive: true });
   fs.mkdirSync(typstPackageCachePath, { recursive: true });
-  updateSplashProgress(34, "正在准备工作目录", "正在初始化本地数据目录");
+  updateSplashProgress(34, "作業ディレクトリを準備しています", "ローカルデータディレクトリを初期化中");
 
   const apiPortBusy = await canConnectToPort("127.0.0.1", apiPort);
   if (apiPortBusy) {
     if (await canReuseExistingBackend(apiPort)) {
       usingExternalBackend = true;
-      updateSplashProgress(52, "检测到已有本地服务", "桌面端将直接复用当前后端");
+      updateSplashProgress(52, "既存のローカルサービスを検出", "デスクトップ版は現在のバックエンドをそのまま再利用します");
       await waitForPort("127.0.0.1", apiPort, 5000);
-      updateSplashProgress(92, "本地服务已就绪", "正在加载主界面");
+      updateSplashProgress(92, "ローカルサービスの準備完了", "メイン画面を読み込み中");
       return;
     }
     throw new Error(
-      `端口 ${apiPort} 已被其他进程占用，且不是可复用的 RetainPDF 后端。请先关闭占用进程后再启动桌面端。`,
+      `ポート ${apiPort} は他プロセスが使用中で、再利用可能な RetainPDF バックエンドではありません。占有プロセスを終了してからデスクトップ版を起動してください。`,
     );
   }
 
   const simplePortBusy = await canConnectToPort("127.0.0.1", simplePort);
   if (simplePortBusy) {
-    throw new Error(`端口 ${simplePort} 已被其他进程占用，请先释放后再启动桌面端。`);
+    throw new Error(`ポート ${simplePort} は他プロセスが使用中です。解放してからデスクトップ版を起動してください。`);
   }
 
   const env = {
@@ -578,7 +578,7 @@ async function startBundledBackend() {
     env.TYPST_BIN = typstBin;
   }
 
-  updateSplashProgress(52, "正在启动本地服务", "Rust API 与 Python worker 正在启动");
+  updateSplashProgress(52, "ローカルサービスを起動しています", "Rust API と Python worker を起動中");
   backendChild = spawn(backendBin, [], {
     cwd: backendRoot,
     env,
@@ -607,13 +607,13 @@ async function startBundledBackend() {
     waitingProgress = Math.min(waitingProgress + 3, 88);
     updateSplashProgress(
       waitingProgress,
-      "正在连接本地服务",
-      "首次启动可能稍慢，请稍候",
+      "ローカルサービスに接続しています",
+      "初回起動はやや時間がかかることがあります。しばらくお待ちください",
     );
   }, 500);
   await waitForPort("127.0.0.1", apiPort, 30000);
   clearInterval(waitingTimer);
-  updateSplashProgress(92, "本地服务已就绪", "正在加载主界面");
+  updateSplashProgress(92, "ローカルサービスの準備完了", "メイン画面を読み込み中");
 }
 
 function createWindow() {
@@ -654,17 +654,17 @@ function createWindow() {
   mainWindow.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL) => {
     const detail = `code=${errorCode} url=${validatedURL || "unknown"} error=${errorDescription || "unknown"}`;
     console.error(`[desktop] renderer load failed: ${detail}`);
-    dialog.showErrorBox("RetainPDF 页面加载失败", detail);
+    dialog.showErrorBox("RetainPDF のページ読み込みに失敗しました", detail);
   });
 
   mainWindow.webContents.on("render-process-gone", (_event, details) => {
     const detail = `reason=${details?.reason || "unknown"} exitCode=${details?.exitCode ?? "unknown"}`;
     console.error(`[desktop] renderer process gone: ${detail}`);
-    dialog.showErrorBox("RetainPDF 渲染进程异常退出", detail);
+    dialog.showErrorBox("RetainPDF のレンダラープロセスが異常終了しました", detail);
   });
 
   mainWindow.webContents.once("did-finish-load", () => {
-    updateSplashProgress(100, "准备完成", "正在进入主界面");
+    updateSplashProgress(100, "準備完了", "メイン画面に移行しています");
     mainWindow.show();
     if (splashWindow && !splashWindow.isDestroyed()) {
       splashWindow.close();
@@ -694,7 +694,7 @@ app.whenReady().then(() => {
       });
     })
     .catch((error) => {
-      dialog.showErrorBox("RetainPDF startup failed", String(error && error.message ? error.message : error));
+      dialog.showErrorBox("RetainPDF の起動に失敗しました", String(error && error.message ? error.message : error));
       app.quit();
     });
 });

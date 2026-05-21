@@ -1,5 +1,5 @@
-# 同步解析代码
-# Please make sure the requests library is installed
+# 同期解析コード
+# requests ライブラリがインストールされていることを確認してください
 # pip install requests
 import base64
 import os
@@ -21,7 +21,7 @@ headers = {
 
 required_payload = {
     "file": file_data,
-    "fileType": <file type>,  # For PDF documents, set `fileType` to 0; for images, set `fileType` to 1
+    "fileType": <file type>,  # PDF は 0、画像は 1
 }
 
 optional_payload = {
@@ -55,7 +55,6 @@ for i, res in enumerate(result["layoutParsingResults"]):
     for img_name, img in res["outputImages"].items():
         img_response = requests.get(img)
         if img_response.status_code == 200:
-            # Save image to local
             filename = os.path.join(output_dir, f"{img_name}_{i}.jpg")
             with open(filename, "wb") as f:
                 f.write(img_response.content)
@@ -64,8 +63,8 @@ for i, res in enumerate(result["layoutParsingResults"]):
             print(f"Failed to download image, status code: {img_response.status_code}")
 
 
-# 异步解析代码
-# Please make sure the requests library is installed
+# 非同期解析コード
+# requests ライブラリがインストールされていることを確認してください
 # pip install requests
 import json
 import os
@@ -92,7 +91,6 @@ optional_payload = {
 print(f"Processing file: {file_path}")
 
 if file_path.startswith("http"):
-    # URL Mode
     headers["Content-Type"] = "application/json"
     payload = {
         "fileUrl": file_path,
@@ -101,16 +99,15 @@ if file_path.startswith("http"):
     }
     job_response = requests.post(JOB_URL, json=payload, headers=headers)
 else:
-    # Local File Mode
     if not os.path.exists(file_path):
         print(f"Error: File not found at {file_path}")
         sys.exit(1)
-        
+
     data = {
         "model": MODEL,
         "optionalPayload": json.dumps(optional_payload)
     }
-    
+
     with open(file_path, "rb") as f:
         files = {"file": f}
         job_response = requests.post(JOB_URL, headers=headers, data=data, files=files)
@@ -179,7 +176,6 @@ if jsonl_url:
             for img_name, img in res["outputImages"].items():
                 img_response = requests.get(img)
                 if img_response.status_code == 200:
-                    # Save image to local
                     filename = os.path.join(output_dir, f"{img_name}_{page_num}.jpg")
                     with open(filename, "wb") as f:
                         f.write(img_response.content)

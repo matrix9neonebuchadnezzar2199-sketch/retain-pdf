@@ -46,7 +46,7 @@ export function mountArtifactDownloadsFeature({
       const resp = await fetchProtected(url);
       if (!resp.ok) {
         const text = await resp.text();
-        throw new Error(`ダウンロードに失敗しました: ${resp.status} ${text || "unknown error"}`);
+        throw new Error(`ダウンロードに失敗しました: ${resp.status} ${text || "不明なエラー"}`);
       }
 
       const blob = await resp.blob();

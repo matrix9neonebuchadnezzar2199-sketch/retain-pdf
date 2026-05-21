@@ -1,25 +1,29 @@
-# 文档目录
+# ドキュメント目次
 
-当前 `doc/` 目录存放面向当前仓库结构整理后的入口文档。
+`doc/` には本リポジトリ向けの技術ドキュメント（日本語）を置いています。
 
-建议优先阅读：
+## 優先して読むドキュメント
 
-- [API 总入口](./API.md)
-- [工程评价与后续执行计划](./工程评价与后续执行计划.md)
-- [架构与 API 契约任务台账](./architecture_tasks.csv)
-- [2026-04-15 Rust API 去耦任务清单](./250415_task.csv)
-- [Rust API 任务生命周期](./rust_api/04-任务生命周期.md)
-- [产物清单与下载](./rust_api/06-产物清单与下载.md)
-- [Pipeline 阶段契约](../backend/scripts/runtime/pipeline/README.md)
-- [Translation 模块说明](../backend/scripts/services/translation/README.md)
-- [后端 API 主文档](./backend-api.md)
-- [服务总览](./api-overview.md)
-- [本地启动与配置](./api-dev.md)
-- [接口说明](./api-endpoints.md)
-- [存储结构](./api-storage.md)
-- [错误排查](./api-troubleshooting.md)
+| 文書 | 内容 |
+| --- | --- |
+| [API.md](./API.md) | API 総合入口 |
+| [backend-api.md](./backend-api.md) | バックエンド API 主文書 |
+| [api-overview.md](./api-overview.md) | サービス概要 |
+| [api-dev.md](./api-dev.md) | ローカル起動と設定 |
+| [api-endpoints.md](./api-endpoints.md) | エンドポイント一覧 |
+| [api-storage.md](./api-storage.md) | ストレージ構造 |
+| [api-troubleshooting.md](./api-troubleshooting.md) | エラー排查・トラブルシュート |
+| [rust_api/README.md](./rust_api/README.md) | Rust API ドキュメント索引 |
+| [rust_api/04-タスクライフサイクル.md](./rust_api/04-タスクライフサイクル.md) | タスクライフサイクル |
+| [rust_api/06-成果物一覧とダウンロード.md](./rust_api/06-成果物一覧とダウンロード.md) | 成果物一覧とダウンロード |
 
-更细的实现细节仍保留在后端目录：
+## バックエンド実装参照
 
 - `backend/rust_api/API_SPEC.md`
 - `backend/rust_api/MinerU_OCR_Service_API.md`
+- `backend/scripts/runtime/pipeline/README.md`
+- `backend/scripts/services/translation/README.md`
+
+## 中国語 README
+
+プロジェクト全体の中国語説明はリポジトリルートの [README.zh-CN.md](../README.zh-CN.md) を参照してください。

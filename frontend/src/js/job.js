@@ -1,4 +1,5 @@
 import { apiBase } from "./config.js";
+import { localizeInputProtocol, localizeUserFacingText } from "./i18n.js";
 
 function numberOrNull(value) {
   const num = Number(value);
@@ -125,10 +126,7 @@ export function normalizeJobPayload(payload) {
 export function summarizeInvocationProtocol(payload) {
   const invocation = payload?.invocation || {};
   const inputProtocol = firstNonEmpty(invocation.input_protocol);
-  if (inputProtocol === "stage_spec") {
-    return "Stage Spec";
-  }
-  return "-";
+  return localizeInputProtocol(inputProtocol);
 }
 
 export function summarizeInvocationSchemaVersion(payload) {
@@ -245,7 +243,7 @@ export function summarizeStageDetail(payload) {
     payload.current_stage,
   );
   if (detail) {
-    return detail;
+    return localizeUserFacingText(detail);
   }
   switch (payload.status) {
     case "queued":
@@ -274,10 +272,11 @@ export function summarizePublicError(payload) {
       payload.error,
       payload.raw_response?.message,
     );
-    return detail || "タスクに失敗しました。入力ファイルと設定を確認してから再試行してください。";
+    return localizeUserFacingText(detail)
+      || "タスクに失敗しました。入力ファイルと設定を確認してから再試行してください。";
   }
   if (payload.error) {
-    return payload.error;
+    return localizeUserFacingText(payload.error);
   }
   return "-";
 }
@@ -286,19 +285,19 @@ export function summarizeDiagnostic(payload) {
   const failure = payload.failure;
   if (failure) {
     const lines = [
-      `段階: ${failure.stage || "-"}`,
-      `分類: ${failure.category || "-"}`,
-      `概要: ${failure.summary || "-"}`,
+      `段階: ${localizeUserFacingText(failure.stage) || "-"}`,
+      `分類: ${localizeUserFacingText(failure.category) || "-"}`,
+      `概要: ${localizeUserFacingText(failure.summary) || "-"}`,
       `リトライ可: ${failure.retryable ? "はい" : "いいえ"}`,
     ];
     if (failure.upstream_host) {
       lines.push(`上流ホスト: ${failure.upstream_host}`);
     }
     if (failure.root_cause) {
-      lines.push(`根本原因: ${failure.root_cause}`);
+      lines.push(`根本原因: ${localizeUserFacingText(failure.root_cause)}`);
     }
     if (failure.suggestion) {
-      lines.push(`提案: ${failure.suggestion}`);
+      lines.push(`提案: ${localizeUserFacingText(failure.suggestion)}`);
     }
     if (failure.last_log_line) {
       lines.push(`直近ログ: ${failure.last_log_line}`);
@@ -310,19 +309,19 @@ export function summarizeDiagnostic(payload) {
     return "-";
   }
   const lines = [
-    `段階: ${diag.stage || diag.failed_stage || "-"}`,
-    `種別: ${diag.type || diag.error_kind || "-"}`,
-    `概要: ${diag.summary || "-"}`,
+    `段階: ${localizeUserFacingText(diag.stage || diag.failed_stage) || "-"}`,
+    `種別: ${localizeUserFacingText(diag.type || diag.error_kind) || "-"}`,
+    `概要: ${localizeUserFacingText(diag.summary) || "-"}`,
     `リトライ可: ${diag.retryable ? "はい" : "いいえ"}`,
   ];
   if (diag.upstream_host) {
     lines.push(`上流ホスト: ${diag.upstream_host}`);
   }
   if (diag.root_cause) {
-    lines.push(`根本原因: ${diag.root_cause}`);
+    lines.push(`根本原因: ${localizeUserFacingText(diag.root_cause)}`);
   }
   if (diag.suggestion) {
-    lines.push(`提案: ${diag.suggestion}`);
+    lines.push(`提案: ${localizeUserFacingText(diag.suggestion)}`);
   }
   if (diag.last_log_line) {
     lines.push(`直近ログ: ${diag.last_log_line}`);
@@ -350,7 +349,7 @@ function formatDurationMs(ms) {
 
 export function summarizeRuntimeField(value) {
   const text = firstNonEmpty(value);
-  return text || "-";
+  return text ? localizeUserFacingText(text) : "-";
 }
 
 export function formatRuntimeDuration(ms) {

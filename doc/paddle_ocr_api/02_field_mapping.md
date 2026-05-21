@@ -1,63 +1,56 @@
 # 02 Field Mapping
 
-## 核心原则
+## 原則
 
-映射时只问一件事：
+問い: この Paddle フィールドは `document.v1` のどの層に置くか。
 
-- 这个 Paddle 字段应该落到 `document.v1` 的哪一层
+許可される層:
 
-当前允许的落位层：
+1. コア: `type/sub_type/bbox/text/lines/segments/tags/derived`
+2. 共通 trace: 複数 provider 共用の `metadata`
+3. provider raw trace: Paddle 私有、`metadata/source`
 
-1. 核心结构层：`type/sub_type/bbox/text/lines/segments/tags/derived`
-2. 通用 trace 层：多个 provider 可能共用的 `metadata`
-3. provider raw trace 层：Paddle 私有字段，保留在 `metadata/source`
+## トップマッピング
 
-## 顶层映射
-
-| Paddle 字段 | `document.v1` 字段 | 说明 |
+| Paddle | `document.v1` | 説明 |
 | --- | --- | --- |
-| provider 固定值 | `source.provider` | 当前固定为 `paddle` |
-| 输入文件路径 | `source.raw_files.source_json` | 由 adapter 外层注入 |
-| 页数 | `page_count` | 由 pages 数量确定 |
+| provider 固定 | `source.provider` | 現在 `paddle` |
+| 入力パス | `source.raw_files.source_json` | adapter 外から注入 |
+| ページ数 | `page_count` | pages 数 |
 
-## 页面映射
+## ページマッピング
 
-| Paddle 字段 | `document.v1` 字段 | 说明 |
+| Paddle | `document.v1` | 説明 |
 | --- | --- | --- |
-| `dataInfo.pages[i].width` | `pages[i].width` | 首选 |
-| `dataInfo.pages[i].height` | `pages[i].height` | 首选 |
-| `prunedResult.width` | `pages[i].width` | 兜底 |
-| `prunedResult.height` | `pages[i].height` | 兜底 |
-| 页序号 | `pages[i].page_index` | 从 0 开始 |
-| 固定值 | `pages[i].unit` | 当前固定 `pt` |
+| `dataInfo.pages[i].width` | `pages[i].width` | 第一候補 |
+| `dataInfo.pages[i].height` | `pages[i].height` | 第一候補 |
+| `prunedResult.width/height` | `pages[i].width/height` | フォールバック |
+| ページ番号 | `pages[i].page_index` | 0 始まり |
+| 固定 | `pages[i].unit` | 現在 `pt` |
 
-## block 映射
+## block マッピング
 
-| Paddle 字段 | `document.v1` 字段 | 说明 |
+| Paddle | `document.v1` | 説明 |
 | --- | --- | --- |
-| `block_bbox` | `bbox` | 归一化 bbox |
-| `block_content` | `text` | 归一化文本 |
-| `block_label` | `type/sub_type/tags` | 走 `block_labels.py` |
-| 行/段拆分结果 | `lines/segments` | 走 `content_extract.py` |
-| `block_id` | `source.raw_block_id` | 保留原始来源 |
-| `block_label` | `source.raw_type` | 保留原始类型 |
-| `block_bbox` | `source.raw_bbox` | 保留原始 bbox |
-| `block_content[:200]` | `source.raw_text_excerpt` | 排错用 |
-| 原始路径 | `source.raw_path` | 指向原始 JSON 路径 |
+| `block_bbox` | `bbox` | 正規化 bbox |
+| `block_content` | `text` | 正規化テキスト |
+| `block_label` | `type/sub_type/tags` | `block_labels.py` |
+| 行/段分割 | `lines/segments` | `content_extract.py` |
+| `block_id` | `source.raw_block_id` | 生 ID 保持 |
+| `block_label` | `source.raw_type` | 生タイプ |
+| `block_bbox` | `source.raw_bbox` | 生 bbox |
+| `block_content[:200]` | `source.raw_text_excerpt` | 排查用 |
+| 生 JSON パス | `source.raw_path` | 参照パス |
 
-## 当前 label 映射
+## label マッピング例
 
-当前主要规则见：
-
-- `backend/scripts/services/document_schema/provider_adapters/paddle/block_labels.py`
-
-已实现映射示例：
+`block_labels.py` 参照:
 
 | `block_label` | `type` | `sub_type` | `tags` |
 | --- | --- | --- | --- |
 | `doc_title` | `text` | `title` | `title` |
 | `abstract` | `text` | `abstract` | `abstract` |
-| `text` | `text` | `body` | 空 |
+| `text` | `text` | `body` | （空） |
 | `paragraph_title` | `text` | `heading` | `heading` |
 | `reference_content` | `text` | `reference_entry` | `reference_entry, reference_zone, skip_translation` |
 | `formula_number` | `text` | `formula_number` | `formula_number, skip_translation` |
@@ -66,22 +59,18 @@
 | `algorithm` | `code` | `code_block` | `code` |
 | `display_formula` | `formula` | `display_formula` | `formula` |
 
-## `derived` 映射
+## `derived`
 
-当前 `derived` 主要由 provider 规则生成，见：
+`trace.py` の provider ルール例:
 
-- `backend/scripts/services/document_schema/provider_adapters/paddle/trace.py`
+- `doc_title` → `derived.role = title`
+- `abstract` → `abstract`
+- `reference_content` → `reference_entry`
+- `formula_number` → `formula_number`
+- `header/footer` → `header` / `footer`
 
-典型规则：
+## 禁止
 
-- `doc_title -> derived.role = title`
-- `abstract -> derived.role = abstract`
-- `reference_content -> derived.role = reference_entry`
-- `formula_number -> derived.role = formula_number`
-- `header/footer -> derived.role = header/footer`
-
-## 不要这么做
-
-1. 不要把 Paddle 私有字段直接塞成新的主契约字段。
-2. 不要在 translation 层再重新解释 `block_label`。
-3. 不要为了单个 fixture 临时改 `type/sub_type` 语义。
+1. Paddle 私有を新しいメイン契約フィールドに直挿入しない
+2. translation 層で `block_label` を再解釈しない
+3. 単一 fixture のためだけに `type/sub_type` 意味を変えない

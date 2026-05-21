@@ -1,75 +1,64 @@
 # 00 Overview
 
-## 目标
+## 目標
 
-Paddle OCR 对接层的目标是：
+Paddle OCR 連携層の目標:
 
-- 输入：Paddle OCR 原始 JSON
-- 输出：符合当前主契约的 `normalized_document_v1`
+- 入力: Paddle OCR 生 JSON
+- 出力: 現行メイン契約に合致する `normalized_document_v1`
 
-也就是：
+つまり:
 
 `Paddle raw payload -> provider adapter -> document.v1 -> translation/rendering`
 
-## 当前识别口径
+## 現在の識別条件
 
-当前代码把下面这种 payload 识别为 Paddle：
+次を満たす payload を Paddle とみなす:
 
-- 顶层是 `dict`
-- 存在 `layoutParsingResults`
-- 存在 `dataInfo`
+- トップが `dict`
+- `layoutParsingResults` がある
+- `dataInfo` がある
 
-代码位置：
+コード:
 
 - `backend/scripts/services/document_schema/provider_adapters/paddle/adapter.py`
 - `backend/scripts/services/document_schema/adapters.py`
 
-## 当前目录职责
+## ディレクトリ責務
 
-`provider_adapters/paddle/` 当前按职责拆成这些部分：
+`provider_adapters/paddle/`:
 
-- `adapter.py`
-  Paddle provider 总入口
-- `payload_reader.py`
-  读取顶层 payload，并按页构造 page spec
-- `page_reader.py`
-  构造 page context/page spec
-- `block_reader.py`
-  构造 block context/block spec
-- `block_labels.py`
-  `block_label -> type/sub_type/tags` 映射
-- `trace.py`
-  构造 `metadata/source/derived`
-- `continuation.py`
-  把 Paddle 的组信息映射成 `continuation_hint`
-- `page_trace.py`
-  页级 trace 和 layout_det 匹配
-- `rich_content.py` 及相关文件
-  富内容 trace 聚合
+- `adapter.py` — 総入口
+- `payload_reader.py` — トップ payload とページ spec
+- `page_reader.py` — page context / page spec
+- `block_reader.py` — block context / block spec
+- `block_labels.py` — `block_label -> type/sub_type/tags`
+- `trace.py` — `metadata/source/derived`
+- `continuation.py` — グループ情報 → `continuation_hint`
+- `page_trace.py` — ページ trace と layout_det 照合
+- `rich_content.py` 等 — リッチコンテンツ trace 集約
 
-## 适配人的任务边界
+## 担当者の境界
 
-适配 Paddle 的人只需要负责这几层：
+担当:
 
-1. Paddle 原始字段解释
-2. 字段落位规则
-3. `block_label` 语义映射
-4. `continuation_hint` 映射
-5. fixture 和回归
+1. Paddle 生フィールドの解釈
+2. フィールド配置ルール
+3. `block_label` 意味論マッピング
+4. `continuation_hint` マッピング
+5. fixture と回帰
 
-不要把这些事情混进任务里：
+タスクに含めない:
 
-1. 翻译提示词
-2. 排版覆盖
-3. PDF 写回
-4. 前端展示逻辑
+1. 翻訳プロンプト
+2. 組版上書き
+3. PDF 書き戻し
+4. フロント表示
 
-## 交付标准
+## 受け入れ基準
 
-至少满足：
-
-1. `adapt_path_to_document_v1()` 可以把 Paddle raw JSON 转成 `document.v1`
-2. `validate_document_payload()` 通过
-3. `extract_text_items()` smoke 通过
-4. fixture 已登记进回归
-5. 文档已经更新
+1. `adapt_path_to_document_v1()` が Paddle raw JSON を `document.v1` に変換できる
+2. `validate_document_payload()` が通る
+3. `extract_text_items()` smoke が通る
+4. fixture が回帰に登録済み
+5. ドキュメント更新済み

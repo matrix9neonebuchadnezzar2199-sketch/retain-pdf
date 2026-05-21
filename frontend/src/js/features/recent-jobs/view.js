@@ -1,4 +1,5 @@
 import { $ } from "../../dom.js";
+import { formatInvocationSummary, localizeInputProtocol, localizeUserFacingText } from "../../i18n.js";
 
 function recentJobsDialogComponent() {
   return document.querySelector("recent-jobs-dialog");
@@ -24,9 +25,12 @@ function recentJobStatusLabel(status) {
 function recentJobProtocolLabel(item) {
   const protocol = `${item?.invocation?.input_protocol || ""}`.trim();
   if (protocol === "stage_spec") {
-    return "Stage Spec";
+    return localizeInputProtocol("stage_spec");
   }
-  return "Unknown";
+  if (!protocol) {
+    return "不明";
+  }
+  return localizeInputProtocol(protocol);
 }
 
 function recentJobProtocolClass(item) {
@@ -86,7 +90,7 @@ export function renderRecentJobsSummary(invocationSummary, items) {
   const counts = Number.isFinite(stageSpecCountValue) && Number.isFinite(unknownCountValue)
     ? { stageSpecCount: stageSpecCountValue, unknownCount: unknownCountValue }
     : summarizeInvocationCounts(items);
-  const text = `Stage Spec ${counts.stageSpecCount} · Unknown ${counts.unknownCount}`;
+  const text = formatInvocationSummary(counts);
   const component = recentJobsDialogComponent();
   if (component?.renderSummary) {
     component.renderSummary(text);
@@ -174,7 +178,7 @@ function buildRecentJobsMarkup(items) {
       </div>
       <div class="recent-job-meta">
         <span>種別: ${recentJobKindLabel(item)}</span>
-        <span>段階: ${item.stage || "-"}</span>
+        <span>段階: ${localizeUserFacingText(item.stage) || "-"}</span>
         <span>更新: ${item.updated_at || "-"}</span>
         <span class="recent-job-protocol ${recentJobProtocolClass(item)}">${recentJobProtocolLabel(item)}</span>
       </div>

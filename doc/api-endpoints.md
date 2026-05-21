@@ -1,14 +1,14 @@
-# 接口说明
+# エンドポイント説明
 
-## 1. 上传 PDF
+## 1. PDF アップロード
 
 `POST /api/v1/uploads`
 
-表单字段：
+フォームフィールド:
 
-- `file`：必填，PDF 文件
+- `file`: 必須、PDF ファイル
 
-示例：
+例:
 
 ```bash
 curl -X POST http://127.0.0.1:41000/api/v1/uploads \
@@ -16,11 +16,11 @@ curl -X POST http://127.0.0.1:41000/api/v1/uploads \
   -F "file=@/path/to/paper.pdf"
 ```
 
-## 2. 创建主任务
+## 2. メインタスクの作成
 
 `POST /api/v1/jobs`
 
-最常用请求体：
+よく使うリクエストボディ:
 
 ```json
 {
@@ -44,16 +44,16 @@ curl -X POST http://127.0.0.1:41000/api/v1/uploads \
 }
 ```
 
-补充说明：
+補足:
 
-- `skip_title_translation=false`：翻译标题
-- `skip_title_translation=true`：跳过标题翻译，保留原文标题
+- `skip_title_translation=false`: タイトルも翻訳
+- `skip_title_translation=true`: タイトル翻訳をスキップし原文タイトルを保持
 
-## 3. 查询任务详情
+## 3. タスク詳細の取得
 
 `GET /api/v1/jobs/{job_id}`
 
-返回重点字段：
+返却で重点的に見るフィールド:
 
 - `status`
 - `stage`
@@ -64,13 +64,13 @@ curl -X POST http://127.0.0.1:41000/api/v1/uploads \
 - `failure_diagnostic`
 - `log_tail`
 
-## 4. 查询事件流
+## 4. イベントストリームの取得
 
 `GET /api/v1/jobs/{job_id}/events`
 
-用于前端进度展示和排错。
+フロントエンドの進捗表示とトラブルシュートに使用します。
 
-## 5. 下载产物
+## 5. 成果物のダウンロード
 
 - `GET /api/v1/jobs/{job_id}/pdf`
 - `GET /api/v1/jobs/{job_id}/markdown`
@@ -79,13 +79,13 @@ curl -X POST http://127.0.0.1:41000/api/v1/uploads \
 - `GET /api/v1/jobs/{job_id}/normalized-document`
 - `GET /api/v1/jobs/{job_id}/normalization-report`
 
-## 6. 取消任务
+## 6. タスクのキャンセル
 
 `POST /api/v1/jobs/{job_id}/cancel`
 
-## 7. 常见状态
+## 7. よくある状態
 
-`status`：
+`status`:
 
 - `queued`
 - `running`
@@ -93,7 +93,7 @@ curl -X POST http://127.0.0.1:41000/api/v1/uploads \
 - `failed`
 - `canceled`
 
-常见 `stage`：
+よくある `stage`:
 
 - `queued`
 - `ocr_submitting`

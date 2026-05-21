@@ -1,50 +1,26 @@
 # 03 Semantics Rules
 
-## 总原则
+## 総原則
 
-适配 Paddle 时，先判断字段属于哪一类：
+フィールドは次の 3 類に分類:
 
-1. 稳定结构
-2. 稳定语义
-3. 仅供排错的原始 trace
+1. 安定構造
+2. 安定意味論
+3. 排查専用 raw trace
 
-## 哪些进核心结构层
+## コア構造層に入れてよいもの
 
-只有跨 provider 也大概率稳定的内容，才允许进入核心结构层：
+provider を跨いでも安定しそうなもののみ:
 
-- `type`
-- `sub_type`
-- `bbox`
-- `text`
-- `lines`
-- `segments`
-- `tags`
-- `derived`
-- `continuation_hint`
+- `type`, `sub_type`, `bbox`, `text`, `lines`, `segments`, `tags`, `derived`, `continuation_hint`
 
-## 哪些进 `tags`
+## `tags`
 
-`tags` 适合放轻量、可组合、下游可能会用到的结构提示。
+軽量で組み合わせ可能な構造ヒント。例: `title`, `abstract`, `heading`, `caption`, `reference_zone`, `skip_translation`, `image`, `table`, `formula`
 
-当前 Paddle 已在用的示例：
+## `derived`
 
-- `title`
-- `abstract`
-- `heading`
-- `caption`
-- `image_caption`
-- `table_caption`
-- `reference_zone`
-- `skip_translation`
-- `image`
-- `table`
-- `formula`
-
-## 哪些进 `derived`
-
-`derived` 适合放更强的语义结论，并注明是谁给的结论。
-
-当前格式：
+より強い意味論結論。提供者を明記。
 
 ```json
 {
@@ -54,48 +30,26 @@
 }
 ```
 
-适合进 `derived` 的例子：
+## `metadata/source` に留めるもの
 
-- title
-- abstract
-- reference_entry
-- formula_number
-- header/footer
-- caption/footnote 这类 provider 已明确识别的角色
+Paddle 私有はまず trace 層:
 
-## 哪些只留在 `metadata/source`
+- `raw_group_id`, `raw_global_group_id`, `raw_global_block_id`, `raw_block_order`, `raw_polygon`
+- `layout_det_*`, `model_settings`, `markdown.images`
 
-Paddle 私有字段默认都应该先留在 trace 层：
+複数 provider で安定し下流が必要なときだけ昇格を検討。
 
-- `raw_group_id`
-- `raw_global_group_id`
-- `raw_global_block_id`
-- `raw_block_order`
-- `raw_polygon`
-- `layout_det_*`
-- `model_settings`
-- `markdown.images`
+## trace 分层
 
-只有在多个 provider 都稳定产出、并且下游确实需要时，才考虑上提。
+1. コア構造
+2. 共通 trace（`content_format`, `asset_*`, `markdown_match_*` 等）
+3. provider raw trace
 
-## 当前 trace 分层
+## ルール変更時
 
-当前 Paddle trace 分层建议：
+`block_label -> type/sub_type/tags/derived` を変える場合は同時に:
 
-1. 核心结构层
-2. 通用 trace 层
-3. provider raw trace 层
-
-其中：
-
-- `content_format / asset_* / markdown_match_*` 更偏“通用 trace 层”
-- `layout_det_* / model_settings / 原始 group id` 更偏“provider raw trace 层”
-
-## 规则变更要求
-
-如果对 `block_label -> type/sub_type/tags/derived` 做变更，必须同时更新：
-
-1. 本目录文档
-2. 相关 fixture
+1. 本ディレクトリのドキュメント
+2. 関連 fixture
 3. regression check
-4. 如有必要，translation extractor smoke
+4. 必要なら translation extractor smoke

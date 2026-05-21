@@ -1,16 +1,12 @@
 # 04 Continuation Hint
 
-## 目标
+## 目標
 
-如果 Paddle 本身已经知道哪些 block 属于同一段，adapter 应该把这类信息映射成统一契约：
+Paddle が同一段落グループを既知なら、統一契約 `continuation_hint` に写す。
 
-- `continuation_hint`
+translation が Paddle の `group_id` / `global_group_id` / `block_order` を直接読まないようにする。
 
-不要让 translation 层直接读取 Paddle 的 `group_id`、`global_group_id`、`block_order`。
-
-## 当前字段
-
-`continuation_hint` 当前结构：
+## 構造
 
 ```json
 {
@@ -23,51 +19,34 @@
 }
 ```
 
-字段说明：
+- `source`: provider 書き込み時は `provider`
+- `group_id`: 連続組の安定 ID
+- `role`: `single` / `head` / `middle` / `tail`
+- `scope`: `intra_page` または `cross_page`
+- `reading_order`: 組内順序
+- `confidence`: provider の信頼度
 
-- `source`
-  当前 provider 写入时固定为 `provider`
-- `group_id`
-  连续组稳定 id
-- `role`
-  `single/head/middle/tail`
-- `scope`
-  `intra_page` 或 `cross_page`
-- `reading_order`
-  组内顺序
-- `confidence`
-  provider 对这个组的置信度
+## Paddle マッピング（`continuation.py`）
 
-## 当前 Paddle 映射规则
+1. `raw_global_group_id` を優先
+2. 無ければ `page_index + raw_group_id`
+3. 複数 block 組で `raw_block_order` が信頼できない場合は hint を出さない
+4. 同ページ組 → `intra_page`
+5. 跨ページ組 → `cross_page`
 
-当前代码在：
+## 下流消費
 
-- `backend/scripts/services/document_schema/provider_adapters/paddle/continuation.py`
+translation は provider-first:
 
-当前规则：
+1. 同ページ `intra_page` を優先消費
+2. `cross_page` は安全条件を満たすときのみ制御付き消費
+3. 不安全なら hint は保持するが拼接は起こさない
 
-1. 优先用 `raw_global_group_id`
-2. 没有全局组时，退回 `page_index + raw_group_id`
-3. 多 block 组如果没有可靠 `raw_block_order`，则不生成 continuation hint
-4. 同页组标为 `intra_page`
-5. 跨页组标为 `cross_page`
+adapter は「provider が知っていること」を正確に表現。translation は「いつ信じるか」を決める。
 
-## 下游消费约定
+## 注意
 
-translation 当前采用 provider-first：
-
-1. 同页 `intra_page` hint 优先直接消费
-2. 跨页 `cross_page` hint 只在安全条件满足时受控消费
-3. 不满足安全条件时，hint 会被保留，但不会直接触发拼接
-
-也就是说：
-
-- adapter 负责“准确表达 provider 知道的事”
-- translation 负责“决定什么时候安全地相信 provider”
-
-## 适配人需要注意
-
-1. `group_id` 只要求组内稳定，不要求跨版本永远不变。
-2. `reading_order` 必须是组内唯一且单调的。
-3. 如果 Paddle 某个版本的组信息不稳定，宁可不写 `continuation_hint`，不要写错。
-4. 不要为了让某个样例过关，伪造跨页连续关系。
+1. `group_id` は組内安定でよい。バージョン跨ぎ永久不変は不要
+2. `reading_order` は組内で一意かつ単調
+3. グループ情報が不安定な Paddle 版では寧可 hint 無し
+4. サンプル合格のための偽 cross_page 連続を作らない

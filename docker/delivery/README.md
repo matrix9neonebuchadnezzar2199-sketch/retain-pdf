@@ -1,191 +1,172 @@
 
+**課題**
 
-**痛点**
+外文の論文・教材・技術文書は情報密度が高い一方、読み解くコストも大きいです。
 
-外文论文、教材、技术文档信息密度高，但读起来费劲：
+- 原文の読解ハードルが高く、効率が低い
+- 一般的な翻訳ツールはプレーンテキスト中心で、数式・画像・組版が崩れやすい
+- 訳後の成果物を整理・共有・アーカイブしにくい
 
-- 原文阅读门槛高，效率低
-- 普通翻译工具只吐纯文本，公式、图片、排版基本全崩
-- 译后结果难整理、难分享、难归档
+**RetainPDF が行うこと**
 
-**RetainPDF 做的事**
+PDF をアップロードし、ワンクリックで元の組版を保った日本語訳を取得します。
 
-上传 PDF，一键拿到保留原始排版的中文译文。
+- 訳 PDF、Markdown、ZIP パッケージを用途に応じて取得
+- Web UI、CLI、API のいずれでも利用可能
+- 画像型 PDF（スキャン・スクリーンショット版）にも対応。編集可能 PDF だけではありません
 
-- 输出译文 PDF、Markdown、ZIP 打包，按需取用
-- 网页端直接操作，也支持命令行和 API 接入
-- 图片型 PDF（扫描件、截图版）同样能处理，不只限于可编辑 PDF
+**翻訳効果の例**
 
-**翻译效果示意**
+一般的な SCI 論文の翻訳例:
 
-普通 SCI 论文翻译效果：
+![一般的な SCI 論文の翻訳例](./g-1.png)
 
-![普通 SCI 论文翻译效果](./g-1.png)
+画像型 PDF の翻訳比較:
 
-图片型 PDF 翻译对比效果：
+![画像型 PDF の翻訳比較](./g-2.png)
 
-![图片型 PDF 翻译对比效果](./g-2.png)
+**類似ソリューションとの違い**
 
-**和同类方案比，好在哪**
-
-- 对比 [PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate)：补上了图片型 PDF 的短板，行内公式与正文的衔接更自然，排版崩掉的概率明显低
-- 对比 Doc2X 等闭源方案：可自主部署、自己掌控接口和结果文件；实测整体效果也更好
-- 实测产出接近直接可用，不需要再手工修排版
-
+- [PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate) との比較: 画像型 PDF の弱点を補い、行内数式と本文の接続が自然になり、組版崩れの確率が低い
+- Doc2X 等のクローズドソースとの比較: 自主デプロイ可能で API と成果物を自分で管理できる。実測でも全体品質が高い傾向
+- 実運用では追加の手作業組版修正なしで近い完成度になることが多い
 
 
 
-# 小白用户
 
-如果你只是想把服务跑起来，按下面步骤做就够了。
+# 初めてのユーザー
 
-## 1. 先确认机器环境
+サービスを起動するだけなら、次の手順で十分です。
 
-建议环境：
+## 1. マシン環境の確認
 
-- 系统：`Linux` 优先，推荐 `Ubuntu 22.04 / 24.04`
-- CPU 架构：当前镜像按 `x86_64 / amd64` 构建，不是 ARM 版本
-- CPU：至少 `4 核`
-- 内存：至少 `8GB`，推荐 `16GB` 或更高
-- 磁盘：至少预留 `10GB` 可用空间
-- 网络：需要能访问 Docker Hub、MinerU 和你的模型 API
+推奨環境:
 
-说明：
+- OS: `Linux` 優先。`Ubuntu 22.04` / `24.04` 推奨
+- CPU アーキテクチャ: 現在のイメージは `x86_64` / `amd64` 向け（ARM 版ではない）
+- CPU: 最低 4 コア
+- メモリ: 最低 8GB、16GB 以上推奨
+- ディスク: 空き 10GB 以上
+- ネットワーク: Docker Hub、MinerU、利用するモデル API へ到達可能であること
 
-- 这个项目主要吃 CPU、内存和网络，不依赖独立显卡
-- 如果你的机器是 `Mac M`、树莓派、ARM 服务器，请先确认是否具备 `x86_64` 兼容运行环境
-- 如果只是轻量自用，`4 核 + 8GB` 可以起服务
-- 如果你要多人同时用，建议从 `8 核 + 16GB` 起步
+補足:
 
-## 2. 安装 Docker
+- 本プロジェクトは主に CPU・メモリ・ネットワークを消費し、専用 GPU は不要
+- `Mac M`、Raspberry Pi、ARM サーバーでは `x86_64` 互換実行環境の有無を先に確認
+- 個人の軽利用なら `4 コア + 8GB` で起動可能
+- 複数人同時利用なら `8 コア + 16GB` から検討
 
-先确认系统里已经安装：
+## 2. Docker のインストール
+
+次がインストール済みであること:
 
 - `docker`
 - `docker compose`
 
-安装完成后，先自检：
+インストール後の確認:
 
 ```bash
 docker --version
 docker compose version
 ```
 
-## 3. 拉取 GitHub 项目
+## 3. GitHub からクローン
 
 ```bash
 git clone https://github.com/wxyhgk/retain-pdf.git
 cd retain-pdf
 ```
 
-## 4. 启动服务
+## 4. サービス起動
 
 ```bash
 docker compose up -d
 ```
 
-启动完成后，默认访问地址：
+起動後のデフォルト URL:
 
 ```text
 http://127.0.0.1:40001
 ```
 
-# 专业用户
+# 上級ユーザー
 
-## 文件作用
+## ファイルの役割
 
 - `docker-compose.yml`
-  Docker 编排入口。默认直接拉取 Docker Hub 镜像并启动 `app` + `web`。
+  Docker オーケストレーションの入口。デフォルトで Docker Hub イメージを pull し `app` + `web` を起動。
 - `docker/app.env`
-  后端运行参数。控制容器内路径、字体、端口、并发和上传限制。
+  バックエンド実行パラメータ。コンテナ内パス、フォント、ポート、並列数、アップロード制限を制御。
 - `docker/web.env`
-  Docker 公共版前端运行参数。控制前端默认注入的后端 key、模型默认值等。
+  Docker 公開版フロントの実行パラメータ。デフォルト注入するバックエンド key、モデル既定値など。
 - `docker/auth.local.json`
-  Rust API 鉴权白名单。前端和 CLI 都需要用这里配置的后端 key 才能访问接口。
+  Rust API 認証ホワイトリスト。フロントと CLI はここに設定したバックエンド key が必要。
 
-## 常见修改项
+## よく変更する項目
 
 ### docker/auth.local.json
 
 - `api_keys`
-  Rust API 允许访问的后端 key 列表。前端请求头里的 `X-API-Key` 必须命中这里的某一个值。
+  Rust API が受理するバックエンド key のリスト。リクエストヘッダ `X-API-Key` はいずれかと一致必須。
 - `max_running_jobs`
-  后端允许同时运行的任务数上限。
+  同時実行タスク数の上限。
 - `simple_port`
-  简便同步接口在容器内监听的端口，默认 `42000`。对外通常不直接暴露。
+  簡易同期 API のコンテナ内待受ポート。既定 `42000`。通常はホストへ直接公開しない。
 
 ### docker/web.env
 
 - `FRONT_API_BASE`
-  前端内部使用的 API 基地址。通常留空，让前端自动走同源代理。
+  フロント内部の API 基準 URL。通常は空のまま同源プロキシに任せる。
 - `FRONT_X_API_KEY`
-  前端自动附带给后端的 `X-API-Key`。必须和 `docker/auth.local.json` 中某个值一致。
+  フロントが自動付与する `X-API-Key`。`docker/auth.local.json` のいずれかと一致させる。
 - `FRONT_MINERU_TOKEN`
-  前端默认带出的 MinerU token。留空时，最终用户自己在页面弹窗里填写。
+  フロント既定の MinerU token。空なら利用者が UI で入力。
 - `FRONT_MODEL_API_KEY`
-  前端默认带出的模型 API key。留空时由最终用户自己填写。
+  フロント既定のモデル API key。空なら利用者が入力。
 - `FRONT_MODEL`
-  前端默认模型名，例如 `deepseek-chat`。
+  既定モデル名。例: `deepseek-chat`
 - `FRONT_BASE_URL`
-  前端默认模型服务地址，例如 `https://api.deepseek.com/v1`。
+  既定モデルサービス URL。例: `https://api.deepseek.com/v1`
 - `FRONT_PROVIDER_PRESET`
-  前端默认 provider 预设。当前 Docker 公共版只保留 `deepseek`。
+  既定 provider プリセット。Docker 公開版は現在 `deepseek` のみ。
 
 ### docker/app.env
 
-- `PROJECT_ROOT`
-  容器内项目根目录。
-- `RUST_API_ROOT`
-  容器内 Rust API 目录。
-- `RUST_API_DATA_DIR`
-  Rust API 运行时数据目录，主要放上传文件、数据库等。
-- `OUTPUT_ROOT`
-  任务输出目录。
-- `PYTHON_BIN`
-  后端调用 Python 脚本使用的解释器。
-- `TYPST_BIN`
-  Typst 可执行文件路径。
-- `RETAIN_PDF_FONT_PATH`
-  默认中文字体文件路径。
-- `RETAIN_PDF_TYPST_FONT_FAMILY`
-  Typst 默认字体族名称。
-- `RUST_API_PORT`
-  完整 API 在容器内监听的端口，默认 `41000`。
-- `RUST_API_SIMPLE_PORT`
-  简便同步接口在容器内监听的端口，默认 `42000`。
-- `RUST_API_MAX_RUNNING_JOBS`
-  最大并发运行任务数。
-- `RUST_API_NORMAL_MAX_BYTES`
-  后端普通上传大小限制。当前交付包写成 `200MB`。
-- `RUST_API_NORMAL_MAX_PAGES`
-  后端普通页数限制。当前交付包写成 `600` 页。
+- `PROJECT_ROOT` — コンテナ内プロジェクトルート
+- `RUST_API_ROOT` — Rust API ディレクトリ
+- `RUST_API_DATA_DIR` — ランタイムデータ（アップロード、DB 等）
+- `OUTPUT_ROOT` — タスク出力ルート
+- `PYTHON_BIN` — Python スクリプト実行用インタプリタ
+- `TYPST_BIN` — Typst 実行ファイルパス
+- `RETAIN_PDF_FONT_PATH` — 既定日本語フォント
+- `RETAIN_PDF_TYPST_FONT_FAMILY` — Typst 既定フォントファミリ
+- `RUST_API_PORT` — 完全 API のコンテナ内ポート。既定 `41000`
+- `RUST_API_SIMPLE_PORT` — 簡易同期 API。既定 `42000`
+- `RUST_API_MAX_RUNNING_JOBS` — 最大同時実行数
+- `RUST_API_NORMAL_MAX_BYTES` — 通常アップロード上限。本パッケージは `200MB`
+- `RUST_API_NORMAL_MAX_PAGES` — 通常ページ上限。本パッケージは `600` ページ
 
-## 说明
+## 補足
 
-- 宿主机默认只暴露 `40001`
-- 前端通过同源代理访问后端
-- 普通用户不需要理解 `API Base`
-- Docker 公共版前端当前只暴露 `DeepSeek` 这个 provider
-- 页面里提示的 `200MB / 600 页` 来自 MinerU 的上游限制，不能超过这个范围
-- 容器内仍然保留：
-  - `41000`：完整 Rust API
-  - `42000`：简便同步接口
-  但默认不会直接映射到宿主机
+- ホストへ公開されるのは通常 `40001` のみ
+- フロントは同源プロキシ経由でバックエンドへアクセス
+- 一般ユーザーは `API Base` を理解する必要はない
+- Docker 公開版フロントは現在 `DeepSeek` provider のみ
+- UI の `200MB / 600 ページ` は MinerU 上流制限に由来し、これを超えられない
+- コンテナ内には `41000`（完全 Rust API）と `42000`（簡易同期 API）が残るが、既定ではホストへマップしない
 
-## 可选默认值
+## 任意の既定値
 
-如果你想让前端默认带出下游配置，可以继续填写：
+フロントに下流設定を既定表示したい場合:
 
 - `FRONT_MINERU_TOKEN`
 - `FRONT_MODEL_API_KEY`
 - `FRONT_MODEL`
 - `FRONT_BASE_URL`
 
-如果留空，最终用户需要在页面右上角的“API 配置”弹窗中自己填写。
+空のままなら、利用者が「API 設定」ダイアログで入力します。
 
-## 如果要换成你自己的镜像版本
-
-也可以这样启动：
+## 独自イメージで起動する場合
 
 ```bash
 APP_IMAGE=wxyhgk/retainpdf-app:latest \
@@ -193,11 +174,9 @@ WEB_IMAGE=wxyhgk/retainpdf-web:latest \
 docker compose up -d
 ```
 
-# 开发者
+# 開発者
 
-如果你想直接用 CLI 调接口，而不是走前端页面，可以按下面方式调用。
-
-先约定几个变量：
+フロントではなく CLI で API を叩く場合の例です。
 
 ```bash
 export HOST="http://127.0.0.1:40001"
@@ -208,13 +187,13 @@ export MODEL="deepseek-chat"
 export BASE_URL="https://api.deepseek.com/v1"
 ```
 
-## 健康检查
+## ヘルスチェック
 
 ```bash
 curl "$HOST/health"
 ```
 
-## 上传 PDF
+## PDF アップロード
 
 ```bash
 curl -X POST "$HOST/api/v1/uploads" \
@@ -222,15 +201,15 @@ curl -X POST "$HOST/api/v1/uploads" \
   -F "file=@/absolute/path/to/your.pdf"
 ```
 
-返回里会拿到：
+返却例:
 
 - `upload_id`
 - `filename`
 - `page_count`
 
-## 创建异步任务
+## 非同期タスク作成
 
-先把上一步返回的 `upload_id` 填进去：
+前段の `upload_id` を指定:
 
 ```bash
 curl -X POST "$HOST/api/v1/jobs" \
@@ -255,19 +234,19 @@ curl -X POST "$HOST/api/v1/jobs" \
   }'
 ```
 
-返回里会拿到：
+返却例:
 
 - `job_id`
 - `status`
 
-## 查询任务状态
+## タスク状態の照会
 
 ```bash
 curl -H "X-API-Key: $X_API_KEY" \
   "$HOST/api/v1/jobs/your-job-id"
 ```
 
-重点看这些字段：
+重点フィールド:
 
 - `status`
 - `stage`
@@ -275,15 +254,11 @@ curl -H "X-API-Key: $X_API_KEY" \
 - `progress`
 - `actions`
 
-任务终态通常是：
+終端状態の例: `succeeded`, `failed`, `canceled`
 
-- `succeeded`
-- `failed`
-- `canceled`
+## 結果のダウンロード
 
-## 下载结果
-
-下载 PDF：
+PDF:
 
 ```bash
 curl -L -H "X-API-Key: $X_API_KEY" \
@@ -291,7 +266,7 @@ curl -L -H "X-API-Key: $X_API_KEY" \
   -o translated.pdf
 ```
 
-下载 Markdown：
+Markdown:
 
 ```bash
 curl -L -H "X-API-Key: $X_API_KEY" \
@@ -299,7 +274,7 @@ curl -L -H "X-API-Key: $X_API_KEY" \
   -o translated.md
 ```
 
-下载 ZIP：
+ZIP:
 
 ```bash
 curl -L -H "X-API-Key: $X_API_KEY" \
@@ -307,22 +282,22 @@ curl -L -H "X-API-Key: $X_API_KEY" \
   -o result.zip
 ```
 
-## 取消任务
+## タスクキャンセル
 
 ```bash
 curl -X POST -H "X-API-Key: $X_API_KEY" \
   "$HOST/api/v1/jobs/your-job-id/cancel"
 ```
 
-## 简便同步接口
+## 簡易同期 API
 
-如果你不想自己分上传 / 创建任务 / 轮询状态，可以直接调用同步接口。
+アップロード・タスク作成・ポーリングを自前で行わず、完了までブロックして ZIP を返す API。
 
-注意：
+注意:
 
-- 这个接口是由前端同源代理转发的
-- 默认路径是 `/api/v1/translate/bundle`
-- 请求会一直阻塞到任务完成，然后直接返回 ZIP
+- フロント同源プロキシ経由
+- 既定パス `/api/v1/translate/bundle`
+- 完了まで接続を保持し、最終的に ZIP を返す
 
 ```bash
 curl -X POST "$HOST/api/v1/translate/bundle" \
